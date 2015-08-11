@@ -1,0 +1,35 @@
+{
+  "name": "edo",
+  "main": "edo.js",
+  "version": "0.0.0",
+  "homepage": "https://github.com/volkovasystems/edo",
+  "authors": [
+    "Richeve S. Bebedor <richeve.bebedor@gmail.com>"
+  ],
+  "description": "EventEmitter extension.",
+  "moduleType": [
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "edo",
+    "EventEmitter",
+    "events",
+    "emit",
+    "event"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "heredito": "~0.2.0",
+    "eventEmitter": "~4.2.11",
+    "async": "~1.4.2",
+    "harden": "~0.2.0"
+  }
+}

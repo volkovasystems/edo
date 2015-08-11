@@ -1,0 +1,32 @@
+{
+  "name": "edo",
+  "version": "0.0.0",
+  "description": "EventEmitter extension.",
+  "main": "edo.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/volkovasystems/edo.git"
+  },
+  "keywords": [
+    "edo",
+    "EventEmitter",
+    "events",
+    "emit",
+    "event"
+  ],
+  "author": "Richeve S. Bebedor <richeve.bebedor@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/volkovasystems/edo/issues"
+  },
+  "homepage": "https://github.com/volkovasystems/edo#readme",
+  "dependencies": {
+    "async": "^1.4.2",
+    "harden": "^0.2.0",
+    "heredito": "^0.2.0",
+    "wolfy87-eventemitter": "^4.2.11"
+  }
+}
