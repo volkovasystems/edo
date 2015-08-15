@@ -106,6 +106,40 @@ Edo.prototype.on = function on( events, handler ){
 	}else{
 		EventEmitter.prototype.on.call( this, events, handler );
 	}
+
+	return this;
+};
+
+Edo.prototype.emit = function emit( event ){
+	var delay = { "count": 1000 }; 
+
+	var parameters = arguments;
+
+	async.until( ( function checkEventListener( ){
+			return ( this.getListeners( event ).length > 0 ||
+				--delay.count == 0 );
+		} ).bind( this ),
+
+		function delay( callback ){
+			delay.timeout = setTimeout( function onTimeout( ){
+				callback( );
+
+				clearTimeout( delay.timeout );
+			}, delay.count );
+		},
+
+		( function execute( ){
+			if( delay.count || 
+				( this.getListeners( event ).length > 0 ) )
+			{
+				EventEmitter.prototype.emit.apply( this, parameters );
+
+			}else{
+				console.debug( "event emit failed", parameters );
+			}
+		} ).bind( this ) );
+
+	return this;
 };
 
 if( typeof module != "undefined" ){ 

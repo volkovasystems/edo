@@ -1,8 +1,8 @@
 {
   "name": "edo",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "EventEmitter extension.",
-  "main": "edo.js",
+  "main": "edo.min.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -28,5 +28,10 @@
     "harden": "^0.2.0",
     "heredito": "^0.2.0",
     "wolfy87-eventemitter": "^4.2.11"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "pita": "^0.2.0",
+    "unit.js": "^2.0.0"
   }
 }
