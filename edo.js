@@ -113,7 +113,7 @@ Edo.prototype.on = function on( events, handler ){
 Edo.prototype.emit = function emit( event ){
 	var delay = { "count": 1000 }; 
 
-	var parameters = arguments;
+	var parameters = _( arguments ).toArray( ).rest( ).value( );
 
 	async.until( ( function checkEventListener( ){
 			return ( this.getListeners( event ).length > 0 ||
@@ -132,7 +132,7 @@ Edo.prototype.emit = function emit( event ){
 			if( delay.count || 
 				( this.getListeners( event ).length > 0 ) )
 			{
-				EventEmitter.prototype.emit.apply( this, parameters );
+				EventEmitter.prototype.emit.call( this, event, parameters );
 
 			}else{
 				console.debug( "event emit failed", parameters );
