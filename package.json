@@ -1,10 +1,14 @@
 {
   "name": "edo",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "EventEmitter extension.",
-  "main": "edo.min.js",
+  "main": "edo.js",
+  "support": "edo.support.js",
+  "deploy": "edo.deploy.js",
+  "browser": "edo.deploy.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "gulp && webpack --progress --display-modules",
+    "test": "mocha edo-test.js"
   },
   "repository": {
     "type": "git",
@@ -22,16 +26,5 @@
   "bugs": {
     "url": "https://github.com/volkovasystems/edo/issues"
   },
-  "homepage": "https://github.com/volkovasystems/edo#readme",
-  "dependencies": {
-    "async": "^1.4.2",
-    "harden": "^0.2.0",
-    "heredito": "^0.2.0",
-    "wolfy87-eventemitter": "^4.2.11"
-  },
-  "devDependencies": {
-    "gulp": "^3.9.0",
-    "pita": "^0.2.0",
-    "unit.js": "^2.0.0"
-  }
+  "homepage": "https://github.com/volkovasystems/edo#readme"
 }

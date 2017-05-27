@@ -1,7 +1,8 @@
 {
   "name": "edo",
-  "main": "edo.min.js",
-  "version": "0.2.0",
+  "version": "0.3.0",
+  "main": "edo.deploy.js",
+  "support": "edo.support.js",
   "homepage": "https://github.com/volkovasystems/edo",
   "authors": [
     "Richeve S. Bebedor <richeve.bebedor@gmail.com>"
@@ -25,11 +26,5 @@
     "bower_components",
     "test",
     "tests"
-  ],
-  "dependencies": {
-    "heredito": "~0.2.0",
-    "eventEmitter": "~4.2.11",
-    "async": "~1.4.2",
-    "harden": "~0.2.0"
-  }
+  ]
 }
