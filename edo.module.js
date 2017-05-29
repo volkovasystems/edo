@@ -446,7 +446,59 @@ const edo = function edo( parameter ){
 		return this;
 	};
 
-	
+	//: @client:
+	if( asea.client ){
+		Event.prototype.notify = function notify( event, parameter ){
+			/*;
+				@meta-configuration:
+					{
+						"event:required": "string",
+						"parameter": "..."
+					}
+				@end-meta-configuration
+			*/
+
+			if( kein( event, this[ HANDLER ] ) ){
+				parameter = budge( arguments );
+
+				this[ HANDLER ][ event ].apply( self, parameter );
+			}
+
+			return this;
+		};
+
+		Event.prototype.record = function record( event, handler, once ){
+			/*;
+				@meta-configuration:
+					{
+						"event:required": "string",
+						"handler:required": "function",
+						"once": "boolean"
+					}
+				@end-meta-configuration
+			*/
+
+			if( !clazof( handler, "Handler" ) ){
+				handler = Handler.push( handler )
+					.context( self )
+					.register( this );
+			}
+
+			if( once === true ){
+				handler = called( handler );
+			}
+
+			if( !kein( event, this[ HANDLER ] ) ){
+				this[ HANDLER ][ event ] = handler;
+
+			}else{
+				this[ HANDLER ][ event ].push( handler );
+			}
+
+			return this;
+		};
+	}
+	//: @end-client
 
 	//: @server:
 	Event = heredito( Event, EventEmitter );

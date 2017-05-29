@@ -1,10 +1,14 @@
 {
   "name": "edo",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "EventEmitter extension.",
-  "main": "edo.min.js",
+  "main": "edo.js",
+  "support": "edo.support.js",
+  "deploy": "edo.deploy.js",
+  "browser": "edo.deploy.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "gulp && webpack --progress --display-modules",
+    "test": "mocha edo-test.js"
   },
   "repository": {
     "type": "git",
@@ -24,14 +28,45 @@
   },
   "homepage": "https://github.com/volkovasystems/edo#readme",
   "dependencies": {
-    "async": "^1.4.2",
-    "harden": "^0.2.0",
-    "heredito": "^0.2.0",
-    "wolfy87-eventemitter": "^4.2.11"
+    "arid": "^0.25.0",
+    "arkount": "^0.7.0",
+    "asea": "^0.13.0",
+    "babel-runtime": "^6.23.0",
+    "budge": "^0.28.0",
+    "called": "^0.27.0",
+    "clazof": "^0.27.0",
+    "diatom": "^0.28.0",
+    "exorcise": "^0.18.0",
+    "falzy": "^0.19.0",
+    "filled": "^0.21.0",
+    "harden": "^0.21.0",
+    "heredito": "^0.30.0",
+    "inface": "^0.3.0",
+    "kein": "^0.25.0",
+    "leveld": "^0.4.0",
+    "plough": "^0.25.0",
+    "protype": "^0.21.0",
+    "pyck": "^0.32.0",
+    "raze": "^0.29.0",
+    "statis": "^0.11.0",
+    "symbiote": "^0.19.0",
+    "valu": "^0.0.0",
+    "zelf": "^0.11.0"
   },
   "devDependencies": {
-    "gulp": "^3.9.0",
-    "pita": "^0.2.0",
-    "unit.js": "^2.0.0"
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.24.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-latest": "^6.24.1",
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-debug": "^3.1.0",
+    "gulp-plumber": "^1.1.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-replace": "^0.5.4",
+    "gulp-sourcemaps": "^2.6.0",
+    "source-map-loader": "^0.2.1",
+    "webpack": "^2.6.1"
   }
 }
