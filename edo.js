@@ -266,7 +266,7 @@ const edo = function edo( parameter ){
 			event.forEach( ( event ) => emitter.on( event, handler ) );
 
 		}else if( asea.client ){
-			event.forEach( ( event ) => this.record( event, handler ) );
+			event.forEach( ( event ) => this.handle( event, handler ) );
 
 		}else{
 			throw new Error( "cannot determine platform, platform not supported" );
@@ -306,7 +306,7 @@ const edo = function edo( parameter ){
 			event.forEach( ( event ) => emitter.once( event, handler ) );
 
 		}else if( asea.client ){
-			event.forEach( ( event ) => this.record( event, handler, true ) );
+			event.forEach( ( event ) => this.handle( event, handler, true ) );
 
 		}else{
 			throw new Error( "cannot determine platform, platform not supported" );

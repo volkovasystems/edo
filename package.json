@@ -1,6 +1,6 @@
 {
   "name": "edo",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "EventEmitter extension.",
   "main": "edo.js",
   "support": "edo.support.js",
