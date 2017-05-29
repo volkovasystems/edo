@@ -4,12 +4,10 @@ const edo = require( "./edo.js" );
 
 let event = edo( )( );
 
-event.on( "hello", "hi", function hello( value ){
+event.once( "hello", "hi", function hello( value ){
 	assert.equal( value, "hello", "should be equal" );
 
-	console.log( "called!" );
+	console.log( "ok" );
 } );
 
 event.broadcast( [ "hello", "hi" ], "hello" );
-
-console.log( "ok" );

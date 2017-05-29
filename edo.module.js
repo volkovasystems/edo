@@ -61,6 +61,7 @@
 			"harden": "harden",
 			"heredito": "heredito",
 			"inface": "inface",
+			"kein": "kein",
 			"leveld": "leveld",
 			"plough": "plough",
 			"protype": "protype",
@@ -86,6 +87,7 @@ const filled = require( "filled" );
 const harden = require( "harden" );
 const heredito = require( "heredito" );
 const inface = require( "inface" );
+const kein = require( "kein" );
 const leveld = require( "leveld" );
 const plough = require( "plough" );
 const protype = require( "protype" );

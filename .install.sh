@@ -1,19 +1,27 @@
 yarn add \
 babel-runtime \
 arid \
+arkount \
 asea \
 budge \
+called \
 clazof \
 diatom \
+exorcise \
 falzy \
+filled \
+harden \
 heredito \
 inface \
+kein \
 leveld \
+plough \
 protype \
 pyck \
 raze \
 statis \
 symbiote \
+valu \
 zelf \
 --save && \
 yarn add \
@@ -34,19 +42,26 @@ webpack \
 --dev && \
 bower install \
 arid \
+arkount \
 asea \
 budge \
+called \
 clazof \
 diatom \
 falzy \
+filled \
+harden \
 heredito \
 inface \
+kein \
 leveld \
+plough \
 protype \
 pyck \
 raze \
 statis \
 symbiote \
+valu \
 zelf \
 --save \
 --force-latest

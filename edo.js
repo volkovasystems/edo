@@ -48,43 +48,59 @@
 	@include:
 		{
 			"arid": "arid",
+			"arkount": "arkount",
 			"asea": "asea",
 			"budge": "budge",
+			"called": "called",
 			"clazof": "clazof",
 			"diatom": "diatom",
 			"EventEmitter": "events"
+			"exorcise": "exorcise",
 			"falzy": "falzy",
+			"filled": "filled",
+			"harden": "harden",
 			"heredito": "heredito",
 			"inface": "inface",
+			"kein": "kein",
 			"leveld": "leveld",
+			"plough": "plough",
 			"protype": "protype",
 			"pyck": "pyck",
 			"raze": "raze",
 			"statis": "statis",
 			"symbiote": "symbiote",
+			"valu": "valu",
 			"zelf": "zelf"
 		}
 	@end-include
 */
 
 const arid = require( "arid" );
+const arkount = require( "arkount" );
 const asea = require( "asea" );
 const budge = require( "budge" );
+const called = require( "called" );
 const clazof = require( "clazof" );
 const diatom = require( "diatom" );
 const falzy = require( "falzy" );
+const filled = require( "filled" );
+const harden = require( "harden" );
 const heredito = require( "heredito" );
 const inface = require( "inface" );
+const kein = require( "kein" );
 const leveld = require( "leveld" );
+const plough = require( "plough" );
 const protype = require( "protype" );
 const pyck = require( "pyck" );
 const raze = require( "raze" );
 const statis = require( "statis" );
 const symbiote = require( "symbiote" );
+const valu = require( "valu" );
 const zelf = require( "zelf" );
 
 //: @server:
 const EventEmitter = require( "events" );
+const exorcise = require( "exorcise" );
 //: @end-server
 
 const CONTEXT = Symbol( "context" );
@@ -158,6 +174,14 @@ const edo = function edo( parameter ){
 			this[ EVENT ] = event;
 
 			return this;
+		} )
+		.implement( "count", function count( ){
+			return arkount( this[ HANDLER ] );
+		} )
+		.implement( "flush", function flush( ){
+			while( filled( this[ HANDLER ] ) ) this[ HANDLER ].pop( );
+
+			return this;
 		} );
 
 	Handler.prototype.initialize = function initialize( parameter ){
@@ -209,6 +233,8 @@ const edo = function edo( parameter ){
 		this.delay( DEFAULT_TIMEOUT );
 		this.restrict( DEFAULT_LIMIT );
 
+		harden( HANDLER, { }, this );
+
 		return this;
 	};
 
@@ -229,8 +255,6 @@ const edo = function edo( parameter ){
 
 		event = pyck( parameter, STRING );
 
-		this[ EVENT ] = event;
-
 		handler = pyck( parameter, FUNCTION )
 			.reduce( ( delegate, handler ) => delegate.push( handler ), Handler )
 			.context( self )
@@ -243,6 +267,49 @@ const edo = function edo( parameter ){
 
 		}else if( asea.client ){
 			event.forEach( ( event ) => this.record( event, handler ) );
+
+		}else{
+			throw new Error( "cannot determine platform, platform not supported" );
+		}
+
+		return this;
+	};
+
+	Event.prototype.once = function once( event, handler ){
+		/*;
+			@meta-configuration:
+				{
+					"event:required": [
+						"string",
+						"..."
+					],
+					"handler:required": "function"
+				}
+			@end-meta-configuration
+		*/
+
+		let parameter = leveld( arguments );
+
+		event = pyck( parameter, STRING );
+
+		handler = pyck( parameter, FUNCTION )
+			.map( ( handler ) => called.bind( self )( handler ) )
+			.reduce( ( delegate, handler ) => delegate.push( handler ), Handler )
+			.context( self )
+			.register( this );
+
+		handler = called( handler );
+
+		if( asea.server ){
+			let emitter = inface( this, EventEmitter );
+
+			event.forEach( ( event ) => emitter.once( event, handler ) );
+
+		}else if( asea.client ){
+			event.forEach( ( event ) => this.record( event, handler, true ) );
+
+		}else{
+			throw new Error( "cannot determine platform, platform not supported" );
 		}
 
 		return this;
@@ -266,7 +333,7 @@ const edo = function edo( parameter ){
 			return this;
 		}
 
-		if( this.listenerCount( event ) <= 0 ){
+		if( this.count( event ) <= 0 ){
 			let timeout = setTimeout( ( ) => {
 				this.emit.apply( this, [ event ].concat( parameter ) );
 
@@ -285,6 +352,9 @@ const edo = function edo( parameter ){
 
 			}else if( asea.client ){
 				this.notify.apply( this, [ event ].concat( parameter ) );
+
+			}else{
+				throw new Error( "cannot determine platform, platform not supported" );
 			}
 		}
 
@@ -346,12 +416,46 @@ const edo = function edo( parameter ){
 		return this;
 	};
 
+	Event.prototype.count = function count( event ){
+		if( asea.server ){
+			return this.listenerCount( event );
 
+		}else if( asea.client ){
+			if( kein( event, this[ HANDLER ] ) ){
+				return this[ HANDLER ][ event ].count( );
+			}
+
+			return 0;
+
+		}else{
+			throw new Error( "cannot determine platform, platform not supported" );
+		}
+	};
+
+	Event.prototype.flush = function flush( ){
+		if( asea.server ){
+			this.removeAllListeners( );
+
+		}else if( asea.client ){
+			valu( this[ HANDLER ] ).forEach( ( handler ) => handler.flush( ) );
+
+		}else{
+			throw new Error( "cannot determine platform, platform not supported" );
+		}
+
+		return this;
+	};
+
+	
 
 	//: @server:
 	Event = heredito( Event, EventEmitter );
 
 	Event = symbiote( Event, EventEmitter );
+
+	exorcise( function flush( ){
+		Handler.flush( );
+	} );
 	//: @end-server
 
 	if( arid( parameter ) ){
