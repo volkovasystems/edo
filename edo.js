@@ -55,7 +55,6 @@
 			"diatom": "diatom",
 			"eqe": "eqe",
 			"EventEmitter": "events",
-			"execd": "execd",
 			"falzy": "falzy",
 			"harden": "harden",
 			"heredito": "heredito",
@@ -82,7 +81,6 @@ const called = require( "called" );
 const clazof = require( "clazof" );
 const diatom = require( "diatom" );
 const eqe = require( "eqe" );
-const execd = require( "execd" );
 const falzy = require( "falzy" );
 const harden = require( "harden" );
 const heredito = require( "heredito" );
@@ -212,8 +210,6 @@ const edo = function edo( parameter ){
 			.reduce( ( listener, handler ) => listener.push( handler ), listener( ) )
 			.context( self )
 			.register( this );
-
-		handler = called( handler );
 
 		if( asea.server ){
 			let emitter = inface( this, EventEmitter );

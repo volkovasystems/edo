@@ -55,7 +55,6 @@
 			"diatom": "diatom",
 			"eqe": "eqe",
 			"EventEmitter": "events",
-			"execd": "execd",
 			"falzy": "falzy",
 			"harden": "harden",
 			"heredito": "heredito",
@@ -82,7 +81,6 @@ const called = require( "called" );
 const clazof = require( "clazof" );
 const diatom = require( "diatom" );
 const eqe = require( "eqe" );
-const execd = require( "execd" );
 const falzy = require( "falzy" );
 const harden = require( "harden" );
 const heredito = require( "heredito" );
@@ -214,8 +212,6 @@ const edo = function edo( parameter ){
 			.reduce( ( listener, handler ) => listener.push( handler ), listener( ) )
 			.context( self )
 			.register( this );
-
-		handler = called( handler );
 
 		if( asea.server ){
 			let emitter = inface( this, EventEmitter );
@@ -524,10 +520,6 @@ const edo = function edo( parameter ){
 				parameter = budge( arguments );
 
 				this[ HANDLER ][ event ].apply( self, parameter );
-
-				if( execd( this[ HANDLER ][ event ] ) ){
-					delete this[ HANDLER ][ event ];
-				}
 			}
 
 			return this;
@@ -558,14 +550,12 @@ const edo = function edo( parameter ){
 				@end-note
 			*/
 			if( !kein( event, this[ HANDLER ] ) ){
-				if( once === true ){
-					handler = called.bind( self )( handler );
-				}
-
 				if( !clazof( handler, "Handler" ) ){
-					handler = listener( ).push(  )
-						.context( self )
-						.register( this );
+					if( once === true ){
+						handler = called.bind( self )( handler );
+					}
+
+					handler = listener( ).push( handler ).context( self ).register( this );
 				}
 
 				this[ HANDLER ][ event ] = handler;
@@ -579,13 +569,17 @@ const edo = function edo( parameter ){
 					@end-note
 				*/
 				if( clazof( handler, "Handler" ) ){
+					if( once === true ){
+						handler.lock( );
+					}
+
 					this[ HANDLER ][ event ].merge( handler );
 
 				}else{
 					if( once === true ){
 						handler = called.bind( self )( handler );
 					}
-					
+
 					this[ HANDLER ][ event ].push( handler );
 				}
 			}

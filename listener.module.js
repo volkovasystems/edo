@@ -47,12 +47,15 @@
 	@include:
 		{
 			"arkount": "arkount",
+			"called": "called",
 			"clazof": "clazof",
 			"diatom": "diatom",
+			"execd": "execd",
 			"exorcise": "exorcise",
 			"falzy": "falzy",
 			"filled": "filled",
 			"kurse": "kurse",
+			"posp": "posp",
 			"protype": "protype",
 			"raze": "raze",
 			"statis": "statis",
@@ -62,11 +65,14 @@
 */
 
 const arkount = require( "arkount" );
+const called = require( "called" );
 const clazof = require( "clazof" );
 const diatom = require( "diatom" );
+const execd = require( "execd" );
 const falzy = require( "falzy" );
 const filled = require( "filled" );
 const kurse = require( "kurse" );
+const posp = require( "posp" );
 const protype = require( "protype" );
 const raze = require( "raze" );
 const statis = require( "statis" );
@@ -161,6 +167,13 @@ const listener = function listener( ){
 		} )
 		.implement( "list", function list( ){
 			return raze( this[ HANDLER ] );
+		} )
+		.implement( "lock", function lock( ){
+			this[ HANDLER ].forEach( ( handler, index ) => {
+				this[ HANDLER ][ index ] = called.bind( this[ CONTEXT ] )( handler );
+			} );
+
+			return this;
 		} );
 
 	Handler.prototype.initialize = function initialize( parameter ){
@@ -200,6 +213,10 @@ const listener = function listener( ){
 
 			}catch( error ){
 				this.event.emit( "error", error );
+			}
+
+			if( execd( handler ) ){
+				posp( this.handler, handler );
 			}
 		} );
 
