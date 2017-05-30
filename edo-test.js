@@ -10,4 +10,16 @@ event.once( "hello", "hi", function hello( value ){
 	console.log( "ok" );
 } );
 
+event.on( "yeah", function yeah( value ){
+	assert.equal( value, "yeah", "should be equal" );
+
+	console.log( "ok" );
+} );
+
 event.broadcast( [ "hello", "hi" ], "hello" );
+
+let event2 = edo( )( );
+
+event2.merge( event );
+
+event2.emit( "yeah", "yeah" );

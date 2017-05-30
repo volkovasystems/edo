@@ -48,26 +48,26 @@
 	@include:
 		{
 			"arid": "arid",
-			"arkount": "arkount",
 			"asea": "asea",
 			"budge": "budge",
 			"called": "called",
 			"clazof": "clazof",
 			"diatom": "diatom",
-			"EventEmitter": "events"
-			"exorcise": "exorcise",
+			"eqe": "eqe",
+			"EventEmitter": "events",
+			"execd": "execd",
 			"falzy": "falzy",
-			"filled": "filled",
 			"harden": "harden",
 			"heredito": "heredito",
+			"idntfy": "idntfy",
 			"inface": "inface",
+			"infray": "infray",
 			"kein": "kein",
 			"leveld": "leveld",
 			"plough": "plough",
 			"protype": "protype",
 			"pyck": "pyck",
 			"raze": "raze",
-			"statis": "statis",
 			"symbiote": "symbiote",
 			"valu": "valu",
 			"zelf": "zelf"
@@ -76,34 +76,36 @@
 */
 
 const arid = require( "arid" );
-const arkount = require( "arkount" );
 const asea = require( "asea" );
 const budge = require( "budge" );
 const called = require( "called" );
 const clazof = require( "clazof" );
 const diatom = require( "diatom" );
+const eqe = require( "eqe" );
+const execd = require( "execd" );
 const falzy = require( "falzy" );
-const filled = require( "filled" );
 const harden = require( "harden" );
 const heredito = require( "heredito" );
+const idntfy = require( "idntfy" );
 const inface = require( "inface" );
+const infray = require( "infray" );
 const kein = require( "kein" );
 const leveld = require( "leveld" );
 const plough = require( "plough" );
 const protype = require( "protype" );
 const pyck = require( "pyck" );
 const raze = require( "raze" );
-const statis = require( "statis" );
 const symbiote = require( "symbiote" );
 const valu = require( "valu" );
 const zelf = require( "zelf" );
 
 //: @server:
 const EventEmitter = require( "events" );
-const exorcise = require( "exorcise" );
+const listener = require( "./listener.js" );
 //: @end-server
 
-const CONTEXT = Symbol( "context" );
+
+
 const EVENT = Symbol( "event" );
 const HANDLER = Symbol( "handler" );
 const LIMIT = Symbol( "limit" );
@@ -124,108 +126,6 @@ const edo = function edo( parameter ){
 	parameter = raze( arguments );
 
 	let self = zelf( this );
-
-	let Handler = diatom( "Handler" );
-	statis( Handler )
-		.attach( HANDLER, [ ] )
-		.implement( "push", function push( handler ){
-			/*;
-				@meta-configuration:
-					{
-						"handler:required": "function"
-					}
-				@end-meta-configuration
-			*/
-
-			if( !protype( handler, FUNCTION ) ){
-				throw new Error( "invalid handler function" );
-			}
-
-			this[ HANDLER ].push( handler );
-
-			return this;
-		} )
-		.implement( "context", function context( self ){
-			/*;
-				@meta-configuration:
-					{
-						"self:required": "*"
-					}
-				@end-meta-configuration
-			*/
-
-			this[ CONTEXT ] = zelf( self );
-
-			return this;
-		} )
-		.implement( "register", function register( event ){
-			/*;
-				@meta-configuration:
-					{
-						"event:required": "Event"
-					}
-				@end-meta-configuration
-			*/
-
-			if( falzy( event ) || !clazof( event, "Event" ) ){
-				throw new Error( "invalid event" );
-			}
-
-			this[ EVENT ] = event;
-
-			return this;
-		} )
-		.implement( "count", function count( ){
-			return arkount( this[ HANDLER ] );
-		} )
-		.implement( "flush", function flush( ){
-			while( filled( this[ HANDLER ] ) ) this[ HANDLER ].pop( );
-
-			return this;
-		} );
-
-	Handler.prototype.initialize = function initialize( parameter ){
-		/*;
-			@meta-configuration:
-				{
-					"parameter": "..."
-				}
-			@end-meta-configuration
-		*/
-
-		parameter = raze( arguments );
-
-		this.context = Handler[ CONTEXT ];
-		this.event = Handler[ EVENT ];
-		this.handler = Handler[ HANDLER ];
-
-		this.execute.apply( this, parameter );
-
-		return this;
-	};
-
-	Handler.prototype.execute = function execute( parameter ){
-		/*;
-			@meta-configuration:
-				{
-					"parameter": "..."
-				}
-			@end-meta-configuration
-		*/
-
-		parameter = raze( arguments );
-
-		this.handler.forEach( ( handler ) => {
-			try{
-				handler.apply( this.context, parameter );
-
-			}catch( error ){
-				this.event.emit( "error", error );
-			}
-		} );
-
-		return this;
-	};
 
 	let Event = diatom( "Event" );
 
@@ -255,10 +155,20 @@ const edo = function edo( parameter ){
 
 		event = pyck( parameter, STRING );
 
-		handler = pyck( parameter, FUNCTION )
-			.reduce( ( delegate, handler ) => delegate.push( handler ), Handler )
-			.context( self )
-			.register( this );
+		handler = pyck( parameter, FUNCTION );
+
+		/*;
+			@note:
+				Checks if the event-handler is already registered.
+			@end-note
+		*/
+		if( this.registered( event, handler ) ){
+			return this;
+		}
+
+		handler = handler.reduce( ( listener, handler ) => {
+			return listener.push( handler );
+		}, listener( ) ).context( self ).register( this );
 
 		if( asea.server ){
 			let emitter = inface( this, EventEmitter );
@@ -292,9 +202,14 @@ const edo = function edo( parameter ){
 
 		event = pyck( parameter, STRING );
 
-		handler = pyck( parameter, FUNCTION )
-			.map( ( handler ) => called.bind( self )( handler ) )
-			.reduce( ( delegate, handler ) => delegate.push( handler ), Handler )
+		handler = pyck( parameter, FUNCTION );
+
+		if( this.registered( event, handler ) ){
+			return this;
+		}
+
+		handler = handler.map( ( handler ) => called.bind( self )( handler ) )
+			.reduce( ( listener, handler ) => listener.push( handler ), listener( ) )
 			.context( self )
 			.register( this );
 
@@ -446,16 +361,157 @@ const edo = function edo( parameter ){
 		return this;
 	};
 
+	/*;
+		@method-documentation:
+			Bi-directional merging of event handlers.
+		@end-method-documentation
+	*/
+	Event.prototype.merge = function merge( event ){
+		/*;
+			@meta-configuration:
+				{
+					"event:required": "Event"
+				}
+			@end-meta-configuration
+		*/
+
+		if( falzy( event ) || !clazof( event, "Event" ) ){
+			throw new Error( "cannot merge event" );
+		}
+
+		this.transfer( event );
+		event.transfer( this );
+
+		return this;
+	};
+
+	/*;
+		@method-documentation:
+			Transfer event handlers.
+		@end-method-documentation
+	*/
+	Event.prototype.transfer = function transfer( event ){
+		/*;
+			@meta-configuration:
+				{
+					"event:required": "Event"
+				}
+			@end-meta-configuration
+		*/
+
+		if( falzy( event ) || !clazof( event, "Event" ) ){
+			throw new Error( "cannot transfer from event" );
+		}
+
+		infray( event.list( ), this.list( ) )
+			.forEach( ( name ) => {
+				this.on( name, function emit( ){
+					event.emit.apply( event, [ name ].concat( raze( arguments ) ) );
+				} );
+			} );
+
+		return this;
+	};
+
+	/*;
+		@method-documentation:
+			List registered event names.
+		@end-method-documentation
+	*/
+	Event.prototype.list = function list( ){
+		if( asea.server ){
+			return this.eventNames( );
+
+		}else if( asea.client ){
+			return Object.keys( this[ HANDLER ] );
+
+		}else{
+			throw new Error( "cannot determine platform, platform not supported" );
+		}
+	};
+
+	/*;
+		@method-documentation:
+			List the handlers of the event.
+		@end-method-documentation
+	*/
+	Event.prototype.handler = function handler( event ){
+		/*;
+			@meta-configuration:
+				{
+					"event:required": "string"
+				}
+			@end-meta-configuration
+		*/
+
+		if( falzy( event ) || !protype( event, STRING ) ){
+			return [ ];
+		}
+
+		if( asea.server ){
+			return this.listeners( event ).reduce( ( list, handler ) => {
+				if( clazof( handler, "Handler" ) ){
+					return list.concat( handler.list( ) );
+
+				}else{
+					list.push( handler );
+
+					return list;
+				}
+			}, [ ] );
+
+		}else if( asea.client ){
+			if( !kein( event, this[ HANDLER ] ) ){
+				return [ ];
+			}
+
+			return this[ HANDLER ][ event ].list( );
+
+		}else{
+			throw new Error( "cannot determine platform, platform not supported" );
+		}
+	};
+
+	/*;
+		@method-documentation:
+			Checks if the event-handler is registered.
+		@end-method-documentation
+	*/
+	Event.prototype.registered = function registered( event, handler ){
+		/*;
+			@meta-configuration:
+				{
+					"event:required": [
+						"string",
+						"[string]",
+						"..."
+					],
+					"handler:required": [
+						"function",
+						"[function]",
+						"..."
+					]
+				}
+			@end-meta-configuration
+		*/
+
+		handler = pyck( plough( arguments ), FUNCTION );
+
+		return pyck( plough( arguments ), STRING ).some( ( event ) => {
+			return this.handler( event ).some( ( listener ) => {
+				return handler.some( ( handler ) => {
+					return idntfy( listener, handler ) || eqe( listener, handler );
+				} );
+			} );
+		} );
+	};
+
 	
 
 	//: @server:
 	Event = heredito( Event, EventEmitter );
 
 	Event = symbiote( Event, EventEmitter );
-
-	exorcise( function flush( ){
-		Handler.flush( );
-	} );
 	//: @end-server
 
 	if( arid( parameter ) ){
