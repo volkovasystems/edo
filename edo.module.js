@@ -59,7 +59,7 @@
 			"harden": "harden",
 			"heredito": "heredito",
 			"idntfy": "idntfy",
-			"inface": "inface",
+			"ferge": "ferge",
 			"infray": "infray",
 			"kein": "kein",
 			"leveld": "leveld",
@@ -85,7 +85,7 @@ const falzy = require( "falzy" );
 const harden = require( "harden" );
 const heredito = require( "heredito" );
 const idntfy = require( "idntfy" );
-const inface = require( "inface" );
+const ferge = require( "ferge" );
 const infray = require( "infray" );
 const kein = require( "kein" );
 const leveld = require( "leveld" );
@@ -171,7 +171,7 @@ const edo = function edo( parameter ){
 		}, listener( ) ).context( self ).register( this );
 
 		if( asea.server ){
-			let emitter = inface( this, EventEmitter );
+			let emitter = ferge( this, "EventEmitter" );
 
 			event.forEach( ( event ) => emitter.on( event, handler ) );
 
@@ -214,7 +214,7 @@ const edo = function edo( parameter ){
 			.register( this );
 
 		if( asea.server ){
-			let emitter = inface( this, EventEmitter );
+			let emitter = ferge( this, "EventEmitter" );
 
 			event.forEach( ( event ) => emitter.once( event, handler ) );
 
@@ -259,7 +259,7 @@ const edo = function edo( parameter ){
 			this.restrict( DEFAULT_LIMIT );
 
 			if( asea.server ){
-				let emitter = inface( this, EventEmitter );
+				let emitter = ferge( this, "EventEmitter" );
 
 				emitter.emit.apply( this, [ event ].concat( parameter ) );
 

@@ -15,7 +15,7 @@ filled \
 harden \
 heredito \
 idntfy \
-inface \
+ferge \
 infray \
 kein \
 kurse \
@@ -61,7 +61,7 @@ filled \
 harden \
 heredito \
 idntfy \
-inface \
+ferge \
 infray \
 kein \
 kurse \
