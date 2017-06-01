@@ -1,6 +1,6 @@
 {
   "name": "edo",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "EventEmitter extension.",
   "main": "edo.js",
   "support": "edo.support.js",
@@ -43,7 +43,7 @@
     "ferge": "^0.1.0",
     "filled": "^0.21.0",
     "harden": "^0.21.0",
-    "heredito": "^0.30.0",
+    "heredito": "^0.32.0",
     "idntfy": "^0.0.0",
     "infray": "^0.0.0",
     "kein": "^0.25.0",

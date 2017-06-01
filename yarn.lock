@@ -774,8 +774,8 @@ babel-types@^6.19.0, babel-types@^6.24.1:
     to-fast-properties "^1.0.1"
 
 babylon@^6.11.0, babylon@^6.15.0:
-  version "6.17.1"
-  resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.17.1.tgz#17f14fddf361b695981fe679385e4f1c01ebd86f"
+  version "6.17.2"
+  resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.17.2.tgz#201d25ef5f892c41bae49488b08db0dd476e9f5c"
 
 balanced-match@^0.4.1:
   version "0.4.2"
@@ -1670,6 +1670,15 @@ eqe@^0.2.0:
     protype "^0.21.0"
     stringe "^0.3.0"
 
+erode@^0.0.0:
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/erode/-/erode-0.0.0.tgz#0059b8899a9bf9b340a1040df4701fdbc876e7b5"
+  dependencies:
+    babel-runtime "^6.23.0"
+    falzy "^0.19.0"
+    mtch "^0.1.0"
+    protype "^0.21.0"
+
 errno@^0.1.3:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/errno/-/errno-0.1.4.tgz#b896e23a9e5e8ba33871fc996abd3635fc9a1c7d"
@@ -2303,9 +2312,9 @@ hawk@~3.1.3:
     hoek "2.x.x"
     sntp "1.x.x"
 
-heredito@^0.30.0:
-  version "0.30.0"
-  resolved "https://registry.yarnpkg.com/heredito/-/heredito-0.30.0.tgz#987a61036b2fa8677c5421f14040d00432441ff8"
+heredito@^0.32.0:
+  version "0.32.0"
+  resolved "https://registry.yarnpkg.com/heredito/-/heredito-0.32.0.tgz#88e38ade5cfcdd1d5d5c4c6d2fb74beb48f40b39"
   dependencies:
     apiqe "^0.1.0"
     babel-runtime "^6.23.0"
@@ -2314,19 +2323,21 @@ heredito@^0.30.0:
     diatom "^0.28.0"
     dictate "^0.17.0"
     een "^0.18.0"
+    erode "^0.0.0"
     falzy "^0.19.0"
     firs "^0.0.0"
     harden "^0.21.0"
     kein "^0.25.0"
     leveld "^0.4.0"
-    metod "^0.7.0"
-    meton "^0.0.0"
-    posp "^0.5.0"
+    metod "^0.8.0"
+    meton "^0.1.0"
+    ngrave "^0.2.0"
+    ntrprt "^0.0.0"
     protype "^0.21.0"
     rder "^0.0.0"
-    reclas "^0.10.0"
+    reclas "^0.11.0"
     sepby "^0.4.0"
-    statis "^0.11.0"
+    statis "^0.12.0"
     transpher "^0.26.0"
     truly "^0.18.0"
     wauker "^0.14.0"
@@ -3049,14 +3060,15 @@ meto@^0.25.0:
     wichevr "^0.9.0"
     zelf "^0.11.0"
 
-metod@^0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/metod/-/metod-0.7.0.tgz#9c7daf1efe1e11938899a7cff5c2d89532058f1f"
+metod@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/metod/-/metod-0.8.0.tgz#e4641b60cfa40bd50335012470f377cbcdb6c992"
   dependencies:
     babel-runtime "^6.23.0"
+    een "^0.18.0"
     ensnme "^0.4.0"
     falzy "^0.19.0"
-    meton "^0.0.0"
+    meton "^0.1.0"
 
 meton@^0.0.0:
   version "0.0.0"
@@ -3065,6 +3077,16 @@ meton@^0.0.0:
     babel-runtime "^6.23.0"
     conztant "^0.1.0"
     falzy "^0.19.0"
+    protype "^0.21.0"
+
+meton@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/meton/-/meton-0.1.0.tgz#f67aab29c6dbb2c23372a861b52f121f4021304f"
+  dependencies:
+    babel-runtime "^6.23.0"
+    conztant "^0.1.0"
+    falzy "^0.19.0"
+    portel "^0.3.0"
     protype "^0.21.0"
 
 micromatch@^2.1.5, micromatch@^2.3.7:
@@ -3199,6 +3221,15 @@ natives@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/natives/-/natives-1.1.0.tgz#e9ff841418a6b2ec7a495e939984f78f163e6e31"
 
+ngrave@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/ngrave/-/ngrave-0.2.0.tgz#b62e7dd72139c5c5f83d1d44e7ffe7c42828bf60"
+  dependencies:
+    babel-runtime "^6.23.0"
+    falzy "^0.19.0"
+    mtch "^0.1.0"
+    protype "^0.21.0"
+
 nmde@^0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/nmde/-/nmde-0.0.0.tgz#173eb8d5b5dad6b7c403fcfd92f04616509c3326"
@@ -3308,6 +3339,15 @@ nsrt@^0.7.0:
     een "^0.18.0"
     protype "^0.21.0"
     truly "^0.18.0"
+
+ntrprt@^0.0.0:
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/ntrprt/-/ntrprt-0.0.0.tgz#9f48fc824e21589d3da552db60715db52cbe9075"
+  dependencies:
+    babel-runtime "^6.23.0"
+    falzy "^0.19.0"
+    mtch "^0.1.0"
+    protype "^0.21.0"
 
 number-is-nan@^1.0.0:
   version "1.0.1"
@@ -3823,9 +3863,9 @@ rechoir@^0.6.2:
   dependencies:
     resolve "^1.1.6"
 
-reclas@^0.10.0:
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/reclas/-/reclas-0.10.0.tgz#16c9a7b9acb1f2f90254ff8559fec0b5cd1869c0"
+reclas@^0.11.0:
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/reclas/-/reclas-0.11.0.tgz#baea9c42aabd0ed739da137e0916ac64cbae150f"
   dependencies:
     babel-runtime "^6.23.0"
     cntsyz "^0.0.0"
@@ -3838,9 +3878,8 @@ reclas@^0.10.0:
     katalyz "^0.0.0"
     kloak "^0.24.0"
     kurse "^0.16.0"
-    metod "^0.7.0"
+    meton "^0.1.0"
     mrkd "^0.4.0"
-    posp "^0.5.0"
     protype "^0.21.0"
 
 redupe@^0.10.0:
@@ -4178,20 +4217,6 @@ stagn@^0.8.0:
     protype "^0.21.0"
     pyck "^0.28.0"
     redupe "^0.10.0"
-
-statis@^0.11.0:
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/statis/-/statis-0.11.0.tgz#cc34c46b1b6e7e870687ba121bb8f58212695133"
-  dependencies:
-    arid "^0.25.0"
-    babel-runtime "^6.23.0"
-    diatom "^0.28.0"
-    falzy "^0.19.0"
-    harden "^0.21.0"
-    protype "^0.21.0"
-    raze "^0.29.0"
-    stagn "^0.8.0"
-    vound "^0.24.0"
 
 statis@^0.12.0:
   version "0.12.0"
