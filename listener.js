@@ -207,7 +207,7 @@ const listener = function listener( ){
 
 		parameter = raze( arguments );
 
-		this.handler.forEach( ( handler ) => {
+		this.handler.reverse( ).forEach( ( handler ) => {
 			try{
 				handler.apply( this.context, parameter );
 

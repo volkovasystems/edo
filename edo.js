@@ -69,6 +69,7 @@
 			"raze": "raze",
 			"symbiote": "symbiote",
 			"valu": "valu",
+			"wichevr": "wichevr",
 			"zelf": "zelf"
 		}
 	@end-include
@@ -95,6 +96,7 @@ const pyck = require( "pyck" );
 const raze = require( "raze" );
 const symbiote = require( "symbiote" );
 const valu = require( "valu" );
+const wichevr = require( "wichevr" );
 const zelf = require( "zelf" );
 
 //: @server:
@@ -166,7 +168,7 @@ const edo = function edo( parameter ){
 
 		handler = handler.reduce( ( listener, handler ) => {
 			return listener.push( handler );
-		}, listener( ) ).context( self ).register( this );
+		}, wichevr( this.holder( event ), listener( ) ) ).context( self ).register( this );
 
 		if( asea.server ){
 			let emitter = ferge( this, "EventEmitter" );
@@ -207,7 +209,9 @@ const edo = function edo( parameter ){
 		}
 
 		handler = handler.map( ( handler ) => called.bind( self )( handler ) )
-			.reduce( ( listener, handler ) => listener.push( handler ), listener( ) )
+			.reduce( ( listener, handler ) => {
+				return listener.push( handler );
+			}, wichevr( this.holder( event ), listener( ) ) )
 			.context( self )
 			.register( this );
 
@@ -462,6 +466,47 @@ const edo = function edo( parameter ){
 			}
 
 			return this[ HANDLER ][ event ].list( );
+
+		}else{
+			throw new Error( "cannot determine platform, platform not supported" );
+		}
+	};
+
+	/*;
+		@method-documentation:
+			Return the Handler that holds the handler procedures.
+		@end-method-documentation
+	*/
+	Event.prototype.holder = function holder( event ){
+		/*;
+			@meta-configuration:
+				{
+					"event:required": [
+						"string",
+						"[string],
+						"...
+					]
+				}
+			@end-meta-configuration
+		*/
+
+		event = pyck( plough( arguments ), STRING );
+
+		if( asea.server ){
+			return event.reduce( ( holder, event ) => {
+				return this.listeners( event ).reduce( ( holder, handler ) => {
+					if( clazof( handler, "Handler" ) ){
+						return handler;
+					}
+
+					return holder;
+				}, undefined );
+			}, undefined );
+
+		}else if( asea.client ){
+			return event.reduce( ( holder, event ) => {
+				return this[ HANDLER ][ event ];
+			}, undefined );
 
 		}else{
 			throw new Error( "cannot determine platform, platform not supported" );

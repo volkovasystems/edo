@@ -28,6 +28,7 @@ raze \
 statis \
 symbiote \
 valu \
+wichevr \
 zelf \
 --save && \
 yarn add \
@@ -74,6 +75,7 @@ raze \
 statis \
 symbiote \
 valu \
+wichevr \
 zelf \
 --save \
 --force-latest
