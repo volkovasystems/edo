@@ -3,7 +3,6 @@ babel-runtime \
 arid \
 arkount \
 asea \
-budge \
 called \
 clazof \
 diatom \
@@ -25,6 +24,7 @@ posp \
 protype \
 pyck \
 raze \
+shft \
 statis \
 symbiote \
 valu \
@@ -51,7 +51,6 @@ bower install \
 arid \
 arkount \
 asea \
-budge \
 called \
 clazof \
 diatom \
@@ -72,6 +71,7 @@ posp \
 protype \
 pyck \
 raze \
+shft \
 statis \
 symbiote \
 valu \
