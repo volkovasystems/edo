@@ -34,6 +34,9 @@
 			"file": "edo.js",
 			"module": "edo",
 			"author": "Richeve S. Bebedor",
+			"contributors": [
+				"John Lenon Maghanoy <johnlenonmaghanoy@gmail.com>"
+			],
 			"eMail": "richeve.bebedor@gmail.com",
 			"repository": "https://github.com/volkovasystems/edo.git",
 			"test": "edo-test.js",
@@ -49,7 +52,6 @@
 		{
 			"arid": "arid",
 			"asea": "asea",
-			"budge": "budge",
 			"called": "called",
 			"clazof": "clazof",
 			"diatom": "diatom",
@@ -67,6 +69,7 @@
 			"protype": "protype",
 			"pyck": "pyck",
 			"raze": "raze",
+			"shft": "shft",
 			"symbiote": "symbiote",
 			"valu": "valu",
 			"wichevr": "wichevr",
@@ -77,7 +80,6 @@
 
 const arid = require( "arid" );
 const asea = require( "asea" );
-const budge = require( "budge" );
 const called = require( "called" );
 const clazof = require( "clazof" );
 const diatom = require( "diatom" );
@@ -94,6 +96,7 @@ const plough = require( "plough" );
 const protype = require( "protype" );
 const pyck = require( "pyck" );
 const raze = require( "raze" );
+const shft = require( "shft" );
 const symbiote = require( "symbiote" );
 const valu = require( "valu" );
 const wichevr = require( "wichevr" );
@@ -240,7 +243,7 @@ const edo = function edo( parameter ){
 			@end-meta-configuration
 		*/
 
-		parameter = budge( arguments );
+		parameter = shft( arguments );
 
 		if( this[ LIMIT ] <= 0 ){
 			this.restrict( DEFAULT_LIMIT );
@@ -324,7 +327,7 @@ const edo = function edo( parameter ){
 
 		event = plough( [ event ] );
 
-		parameter = budge( arguments );
+		parameter = shft( arguments );
 
 		event.forEach( ( event ) => this.emit.apply( this, [ event ].concat( parameter ) ) );
 
