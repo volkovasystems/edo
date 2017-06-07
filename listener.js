@@ -89,6 +89,10 @@ const HANDLER = Symbol( "handler" );
 const listener = function listener( ){
 	let Handler = diatom( "Handler" );
 
+	//: @server:
+	let release = exorcise( function flush( ){ Handler.flush( ); } );
+	//: @end-server
+
 	statis( Handler )
 		.attach( HANDLER, [ ] )
 		.implement( "push", function push( handler ){
@@ -163,6 +167,8 @@ const listener = function listener( ){
 		.implement( "flush", function flush( ){
 			while( filled( this[ HANDLER ] ) ) this[ HANDLER ].pop( );
 
+			release( );
+
 			return this;
 		} )
 		.implement( "list", function list( ){
@@ -222,10 +228,6 @@ const listener = function listener( ){
 
 		return this;
 	};
-
-	//: @server:
-	exorcise( function flush( ){ Handler.flush( ); } );
-	//: @end-server
 
 	return Handler;
 };
