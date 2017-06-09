@@ -23,3 +23,11 @@ let event2 = edo( )( );
 event2.merge( event );
 
 event2.emit( "yeah", "yeah" );
+
+event2.on( "hey", function hey( value ){
+	assert.equal( value, "hey", "should be equal" );
+
+	console.log( "ok" );
+} );
+
+event.emit( "hey", "hey" );

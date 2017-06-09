@@ -52,8 +52,10 @@
 		{
 			"arid": "arid",
 			"asea": "asea",
+			"asyum": "asyum",
 			"called": "called",
 			"clazof": "clazof",
+			"depher": "depher",
 			"diatom": "diatom",
 			"eqe": "eqe",
 			"EventEmitter": "events",
@@ -61,9 +63,11 @@
 			"harden": "harden",
 			"heredito": "heredito",
 			"idntfy": "idntfy",
+			"idntty": "idntty",
 			"ferge": "ferge",
 			"infray": "infray",
 			"kein": "kein",
+			"kurse": "kurse",
 			"leveld": "leveld",
 			"plough": "plough",
 			"protype": "protype",
@@ -80,17 +84,22 @@
 
 const arid = require( "arid" );
 const asea = require( "asea" );
+const asyum = require( "asyum" );
 const called = require( "called" );
 const clazof = require( "clazof" );
+const depher = require( "depher" );
 const diatom = require( "diatom" );
+const een = require( "een" );
 const eqe = require( "eqe" );
 const falzy = require( "falzy" );
 const harden = require( "harden" );
 const heredito = require( "heredito" );
 const idntfy = require( "idntfy" );
+const idntty = require( "idntty" );
 const ferge = require( "ferge" );
 const infray = require( "infray" );
 const kein = require( "kein" );
+const kurse = require( "kurse" );
 const leveld = require( "leveld" );
 const plough = require( "plough" );
 const protype = require( "protype" );
@@ -112,6 +121,7 @@ const listener = require( "./listener.js" );
 const EVENT = Symbol( "event" );
 const HANDLER = Symbol( "handler" );
 const LIMIT = Symbol( "limit" );
+const LINK = Symbol( "link" );
 const TIMEOUT = Symbol( "timeout" );
 
 const DEFAULT_TIMEOUT = 1000;
@@ -137,11 +147,18 @@ const edo = function edo( parameter ){
 		this.restrict( DEFAULT_LIMIT );
 
 		harden( HANDLER, { }, this );
+		harden( LINK, [ ], this );
+
+		kurse( this );
+
+		let identity = idntty( this ).toString( );
+		this.on( `${ identity }:on-listener-added`, function handle( ){ } );
+		this.on( `${ identity }:once-listener-added`, function handle( ){ } );
 
 		return this;
 	};
 
-	Event.prototype.on = function on( event, handler ){
+	Event.prototype.on = function on( event, handler, option ){
 		/*;
 			@meta-configuration:
 				{
@@ -149,7 +166,8 @@ const edo = function edo( parameter ){
 						"string",
 						"..."
 					],
-					"handler:required": "function"
+					"handler:required": "function",
+					"option": "object"
 				}
 			@end-meta-configuration
 		*/
@@ -160,9 +178,16 @@ const edo = function edo( parameter ){
 
 		handler = pyck( parameter, FUNCTION );
 
+		//: @note: Preserve the original handler. This will be used to emit notification.
+		let _handler = handler;
+
+		option = depher( parameter, OBJECT, { } );
+
 		/*;
 			@note:
 				Checks if the event-handler is already registered.
+
+				Note that this will check the real handler function not the Handler instance.
 			@end-note
 		*/
 		if( this.registered( event, handler ) ){
@@ -185,10 +210,23 @@ const edo = function edo( parameter ){
 			throw new Error( "cannot determine platform, platform not supported" );
 		}
 
+		/*;
+			@note:
+				This is our own notification that the event has been added.
+
+				Note that we will not notify if the event is an identity event or
+					"disableOnListenerNotification" is enabled.
+			@end-note
+		*/
+		let identity = idntty( this ).toString( );
+		if( !( new RegExp( identity ) ).test( event ) && !option.disableOnListenerNotification ){
+			this.emit( `${ identity }:on-listener-added`, event, _handler );
+		}
+
 		return this;
 	};
 
-	Event.prototype.once = function once( event, handler ){
+	Event.prototype.once = function once( event, handler, option ){
 		/*;
 			@meta-configuration:
 				{
@@ -196,7 +234,8 @@ const edo = function edo( parameter ){
 						"string",
 						"..."
 					],
-					"handler:required": "function"
+					"handler:required": "function",
+					"option": "object"
 				}
 			@end-meta-configuration
 		*/
@@ -207,6 +246,18 @@ const edo = function edo( parameter ){
 
 		handler = pyck( parameter, FUNCTION );
 
+		//: @note: Preserve the original handler. This will be used to emit notification.
+		let _handler = handler;
+
+		option = depher( parameter, OBJECT, { } );
+
+		/*;
+			@note:
+				Checks if the event-handler is already registered.
+
+				Note that this will check the real handler function not the Handler instance.
+			@end-note
+		*/
 		if( this.registered( event, handler ) ){
 			return this;
 		}
@@ -228,6 +279,19 @@ const edo = function edo( parameter ){
 
 		}else{
 			throw new Error( "cannot determine platform, platform not supported" );
+		}
+
+		/*;
+			@note:
+				This is our own notification that the event has been added once.
+
+				Note that we will not notify if the event is an identity event or
+					"disableOnceListenerNotification" is enabled.
+			@end-note
+		*/
+		let identity = idntty( this ).toString( );
+		if( !( new RegExp( identity ) ).test( event ) && !option.disableOnceListenerNotification ){
+			this.emit( `${ identity }:once-listener-added`, event, _handler );
 		}
 
 		return this;
@@ -352,14 +416,20 @@ const edo = function edo( parameter ){
 
 	Event.prototype.flush = function flush( ){
 		if( asea.server ){
+			this.list( ).forEach( ( event ) => asyum( this.holder( event ), function flush( ){ } ).flush( ) );
+
 			this.removeAllListeners( );
 
 		}else if( asea.client ){
 			valu( this[ HANDLER ] ).forEach( ( handler ) => handler.flush( ) );
 
+			Object.keys( this[ HANDLER ] ).forEach( ( event ) => ( delete this[ HANDLER ][ event ] ) );
+
 		}else{
 			throw new Error( "cannot determine platform, platform not supported" );
 		}
+
+		while( this[ LINK ].length ) this[ LINK ].pop( ).flush( );
 
 		return this;
 	};
@@ -412,6 +482,42 @@ const edo = function edo( parameter ){
 					event.emit.apply( event, [ name ].concat( raze( arguments ) ) );
 				} );
 			} );
+
+		let self = this;
+		let identity = idntty( this ).toString( );
+		this.on( `${ identity }:on-listener-added`, function onListenerAdded( name ){
+			event.on( name, function emit( ){
+				self.emit.apply( self, [ name ].concat( raze( arguments ) ) );
+			}, { "disableOnListenerNotification": true } );
+		} );
+
+		this.on( `${ identity }:once-listener-added`, function onceListenerAdded( name ){
+			event.once( name, function emit( ){
+				self.emit.apply( self, [ name ].concat( raze( arguments ) ) );
+			}, { "disableOnceListenerNotification": true } );
+		} );
+
+		this.link( event );
+
+		return this;
+	};
+
+	Event.prototype.link = function link( event ){
+		/*;
+			@meta-configuration:
+				{
+					"event:required": "Event"
+				}
+			@end-meta-configuration
+		*/
+
+		if( falzy( event ) || !clazof( event, "Event" ) ){
+			throw new Error( "cannot link event" );
+		}
+
+		if( !een( this[ LINK ], event, ( link, event ) => idntfy( link, event ) ) ){
+			this[ LINK ].push( event );
+		}
 
 		return this;
 	};

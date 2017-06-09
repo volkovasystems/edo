@@ -3,9 +3,12 @@ babel-runtime \
 arid \
 arkount \
 asea \
+asyum \
 called \
 clazof \
+depher \
 diatom \
+een \
 eqe \
 execd \
 exorcise \
@@ -14,6 +17,7 @@ filled \
 harden \
 heredito \
 idntfy \
+idntty \
 ferge \
 infray \
 kein \
@@ -51,9 +55,12 @@ bower install \
 arid \
 arkount \
 asea \
+asyum \
 called \
 clazof \
+depher \
 diatom \
+een \
 eqe \
 execd \
 falzy \
@@ -61,6 +68,7 @@ filled \
 harden \
 heredito \
 idntfy \
+idntty \
 ferge \
 infray \
 kein \
