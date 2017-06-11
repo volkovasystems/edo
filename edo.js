@@ -626,6 +626,10 @@ const edo = function edo( parameter ){
 		@method-documentation:
 			Checks if the event-handler is registered.
 		@end-method-documentation
+
+		@todo:
+			This needs optimization.
+		@end-todo
 	*/
 	Event.prototype.registered = function registered( event, handler ){
 		/*;
@@ -654,6 +658,22 @@ const edo = function edo( parameter ){
 				} );
 			} );
 		} );
+	};
+
+	Event.prototype.hasEvent = function hasEvent( event ){
+		/*;
+			@meta-configuration:
+				{
+					"event:required": "string"
+				}
+			@end-meta-configuration
+		*/
+
+		if( falzy( event ) || !protype( event, STRING ) ){
+			throw new Error( "invalid event" );
+		}
+
+		return een( this.list( ), event );
 	};
 
 	
