@@ -1,10 +1,52 @@
+<!DOCTYPE html>
 <html>
 	<head>
-		<script
-			type="application/javascript"
-			src="./edo.deploy.js">
+		<title>edo unit test</title>
 
+		<link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.3.2.css">
 
-		</script>
+		<script type="application/javascript" src="https://code.jquery.com/qunit/qunit-2.3.2.js"></script>
+
+		<script type="application/javascript" src="./edo.deploy.js"></script>
 	</head>
+
+	<body>
+		<div id="qunit"></div>
+
+		<div id="qunit-fixture"></div>
+
+		<script type="application/javascript">
+			QUnit.test( "edo unit test", function( assert ) {
+
+				let event = edo( )( );
+
+				event.once( "hello", "hi", function hello( value ){
+					assert.equal( value, "hello", "should be equal" );
+
+					console.log( "ok" );
+				} );
+
+				event.on( "yeah", function yeah( value ){
+					assert.equal( value, "yeah", "should be equal" );
+
+					console.log( "ok" );
+				} );
+
+				event.broadcast( [ "hello", "hi" ], "hello" );
+
+				let event2 = edo( )( );
+
+				event2.merge( event );
+
+				event2.emit( "yeah", "yeah" );
+
+				event2.on( "hey", function hey( value ){
+					assert.equal( value, "hey", "should be equal" );
+
+					console.log( "ok" );
+				} );
+				
+			} );
+		</script>
+	</body>
 </html>
