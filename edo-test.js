@@ -31,3 +31,31 @@ event2.on( "hey", function hey( value ){
 } );
 
 event.emit( "hey", "hey" );
+
+let event3 = edo( )( );
+
+event3.on( "wah", function wah( value ){
+	assert.equal( value, "wah", "should be equal" );
+
+	console.log( "wah" );
+} );
+
+let event4 = edo( )( );
+
+event4.on( "wee", function wee( value ){
+	assert.equal( value, "wee", "should be equal" );
+
+	console.log( "wee" );
+} );
+
+let event5 = edo( )( );
+
+event3.merge( event4, event5 );
+
+event3.emit( "woo", "woo" );
+
+event5.on( "woo", function woo( value ){
+	assert.equal( value, "woo", "should be equal" );
+
+	console.log( "woo" );
+} );
