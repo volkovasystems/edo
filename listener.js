@@ -54,11 +54,16 @@
 			"called": "called",
 			"clazof": "clazof",
 			"diatom": "diatom",
+			"doubt": "doubt",
 			"execd": "execd",
 			"exorcise": "exorcise",
 			"falzy": "falzy",
 			"filled": "filled",
+			"harden": "harden",
+			"idntty": "idntty",
 			"kurse": "kurse",
+			"mrkd": "mrkd",
+			"ntrprt": "ntrprt",
 			"posp": "posp",
 			"protype": "protype",
 			"raze": "raze",
@@ -72,10 +77,15 @@ const arkount = require( "arkount" );
 const called = require( "called" );
 const clazof = require( "clazof" );
 const diatom = require( "diatom" );
+const doubt = require( "doubt" );
 const execd = require( "execd" );
 const falzy = require( "falzy" );
 const filled = require( "filled" );
+const harden = require( "harden" );
+const idntty = require( "idntty" );
 const kurse = require( "kurse" );
+const mrkd = require( "mrkd" );
+const ntrprt = require( "ntrprt" );
 const posp = require( "posp" );
 const protype = require( "protype" );
 const raze = require( "raze" );
@@ -88,7 +98,10 @@ const exorcise = require( "exorcise" );
 
 const CONTEXT = Symbol( "context" );
 const EVENT = Symbol( "event" );
+const ID = Symbol( "id" );
+const LINK = Symbol( "link" );
 const HANDLER = Symbol( "handler" );
+const OWNER = Symbol( "owner" );
 
 const listener = function listener( ){
 	let Handler = diatom( "Handler" );
@@ -103,16 +116,77 @@ const listener = function listener( ){
 			/*;
 				@meta-configuration:
 					{
-						"handler:required": "function"
+						"handler:required": [
+							"function",
+							"[function]"
+						]
 					}
 				@end-meta-configuration
 			*/
+
+			if( doubt( handler, AS_ARRAY ) ){
+				raze( handler ).forEach( ( handler ) => this.push( handler ) );
+
+				return this;
+			}
 
 			if( !protype( handler, FUNCTION ) ){
 				throw new Error( "invalid handler function" );
 			}
 
 			this[ HANDLER ].push( kurse( handler ) );
+
+			statis( handler )
+				.implement( "ownedBy", function ownedBy( owner ){
+					/*;
+						@meta-configuration:
+							{
+								"owner:required": "Event"
+							}
+						@end-meta-configuration
+					*/
+
+					if( falzy( owner ) || !clazof( owner, "Event" ) ){
+						throw new Error( "invalid owner" );
+					}
+
+					if( mrkd( OWNER, this ) ){
+						return this;
+					}
+
+					harden( OWNER, idntty( owner ), this );
+
+					return this;
+				} )
+				.implement( "linkedTo", function linkedTo( link ){
+					/*;
+						@meta-configuration:
+							{
+								"link:required": "Event"
+							}
+						@end-meta-configuration
+					*/
+
+					if( falzy( link ) || !clazof( link, "Event" ) ){
+						throw new Error( "invalid link" );
+					}
+
+					if( mrkd( LINK, this ) ){
+						return this;
+					}
+
+					harden( LINK, idntty( link ), this );
+
+					return this;
+				} )
+				.implement( "getOwner", function getOwner( ){
+					return this[ OWNER ];
+				} )
+				.implement( "getLink", function getLink( ){
+					return this[ LINK ];
+				} );
+
+			handler.ownedBy( this[ EVENT ] );
 
 			return this;
 		} )

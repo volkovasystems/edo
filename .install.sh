@@ -8,6 +8,7 @@ called \
 clazof \
 depher \
 diatom \
+doubt \
 een \
 eqe \
 execd \
@@ -23,16 +24,18 @@ infray \
 kein \
 kurse \
 leveld \
+mrkd \
+ntrprt \
 plough \
 posp \
 protype \
 pyck \
+pyp \
 raze \
 shft \
 statis \
 symbiote \
 valu \
-wichevr \
 zelf \
 --save && \
 yarn add \
@@ -60,6 +63,7 @@ called \
 clazof \
 depher \
 diatom \
+doubt \
 een \
 eqe \
 execd \
@@ -74,16 +78,18 @@ infray \
 kein \
 kurse \
 leveld \
+mrkd \
+ntrprt \
 plough \
 posp \
 protype \
 pyck \
+pyp \
 raze \
 shft \
 statis \
 symbiote \
 valu \
-wichevr \
 zelf \
 --save \
 --force-latest

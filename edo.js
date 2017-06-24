@@ -69,13 +69,14 @@
 			"kurse": "kurse",
 			"leveld": "leveld",
 			"plough": "plough",
+			"posp": "posp",
+			"pyp": "pyp",
 			"protype": "protype",
 			"pyck": "pyck",
 			"raze": "raze",
 			"shft": "shft",
 			"symbiote": "symbiote",
 			"valu": "valu",
-			"wichevr": "wichevr",
 			"zelf": "zelf"
 		}
 	@end-include
@@ -101,19 +102,22 @@ const kein = require( "kein" );
 const kurse = require( "kurse" );
 const leveld = require( "leveld" );
 const plough = require( "plough" );
+const posp = require( "posp" );
+const pyp = require( "pyp" );
 const protype = require( "protype" );
 const pyck = require( "pyck" );
 const raze = require( "raze" );
 const shft = require( "shft" );
 const symbiote = require( "symbiote" );
 const valu = require( "valu" );
-const wichevr = require( "wichevr" );
 const zelf = require( "zelf" );
 
 //: @server:
 const EventEmitter = require( "events" );
+const EventList = require( "./event-list.js" );
 const listener = require( "./listener.js" );
 //: @end-server
+
 
 
 
@@ -124,7 +128,7 @@ const LINK = Symbol( "link" );
 const TIMEOUT = Symbol( "timeout" );
 
 const DEFAULT_TIMEOUT = 1000;
-const DEFAULT_LIMIT = 1000;
+const DEFAULT_LIMIT = 10;
 
 const edo = function edo( parameter ){
 	/*;
@@ -165,7 +169,10 @@ const edo = function edo( parameter ){
 						"string",
 						"..."
 					],
-					"handler:required": "function",
+					"handler:required": [
+						"function",
+						"..."
+					],
 					"option": "object"
 				}
 			@end-meta-configuration
@@ -193,20 +200,32 @@ const edo = function edo( parameter ){
 			return this;
 		}
 
-		handler = handler.reduce( ( listener, handler ) => {
-			return listener.push( handler );
-		}, wichevr( this.holder( event ), listener( ) ) ).context( self ).register( this );
+		if( this.haveEvent( event ) ){
+			event.forEach( ( event ) => {
+				if( this.hasEvent( event ) ){
+					this.holder( event ).push( handler );
 
-		if( asea.server ){
-			let emitter = ferge( this, "EventEmitter" );
-
-			event.forEach( ( event ) => emitter.on( event, handler ) );
-
-		}else if( asea.client ){
-			event.forEach( ( event ) => this.handle( event, handler ) );
+				}else{
+					this.on.apply( this, event.concat( handler ).concat( [ option ] ) );
+				}
+			} );
 
 		}else{
-			throw new Error( "cannot determine platform, platform not supported" );
+			let holder = listener( ).register( this ).context( self );
+
+			handler = handler.reduce( ( listener, handler ) => listener.push( handler ), holder );
+
+			if( asea.server ){
+				let emitter = ferge( this, "EventEmitter" );
+
+				event.forEach( ( event ) => emitter.on( event, handler ) );
+
+			}else if( asea.client ){
+				event.forEach( ( event ) => this.handle( event, handler ) );
+
+			}else{
+				throw new Error( "cannot determine platform, platform not supported" );
+			}
 		}
 
 		/*;
@@ -261,23 +280,34 @@ const edo = function edo( parameter ){
 			return this;
 		}
 
-		handler = handler.map( ( handler ) => called.bind( self )( handler ) )
-			.reduce( ( listener, handler ) => {
-				return listener.push( handler );
-			}, wichevr( this.holder( event ), listener( ) ) )
-			.context( self )
-			.register( this );
+		handler = handler.map( ( handler ) => called.bind( self )( handler ) );
 
-		if( asea.server ){
-			let emitter = ferge( this, "EventEmitter" );
+		if( this.haveEvent( event ) ){
+			event.forEach( ( event ) => {
+				if( this.hasEvent( event ) ){
+					this.holder( event ).push( handler );
 
-			event.forEach( ( event ) => emitter.once( event, handler ) );
-
-		}else if( asea.client ){
-			event.forEach( ( event ) => this.handle( event, handler, true ) );
+				}else{
+					this.once.apply( this, event.concat( handler ).concat( [ option ] ) );
+				}
+			} );
 
 		}else{
-			throw new Error( "cannot determine platform, platform not supported" );
+			let holder = listener( ).register( this ).context( self );
+
+			handler = handler.reduce( ( listener, handler ) => listener.push( handler ), holder );
+
+			if( asea.server ){
+				let emitter = ferge( this, "EventEmitter" );
+
+				event.forEach( ( event ) => emitter.once( event, handler ) );
+
+			}else if( asea.client ){
+				event.forEach( ( event ) => this.handle( event, handler, true ) );
+
+			}else{
+				throw new Error( "cannot determine platform, platform not supported" );
+			}
 		}
 
 		/*;
@@ -314,7 +344,24 @@ const edo = function edo( parameter ){
 			return this;
 		}
 
-		if( this.count( event ) <= 0 ){
+		if( this.hasEvent( event ) ){
+			console.log( "emitting", event );
+
+			this.restrict( DEFAULT_LIMIT );
+
+			if( asea.server ){
+				let emitter = ferge( this, "EventEmitter" );
+
+				emitter.emit.apply( this, [ event ].concat( parameter ) );
+
+			}else if( asea.client ){
+				this.notify.apply( this, [ event ].concat( parameter ) );
+
+			}else{
+				throw new Error( "cannot determine platform, platform not supported" );
+			}
+
+		}else{
 			let timeout = setTimeout( ( ) => {
 				this.emit.apply( this, [ event ].concat( parameter ) );
 
@@ -322,9 +369,38 @@ const edo = function edo( parameter ){
 			}, this[ TIMEOUT ] );
 
 			this[ LIMIT ]--;
+		}
 
-		}else{
-			this.restrict( DEFAULT_LIMIT );
+		return this;
+	};
+
+	Event.prototype.invoke = function invoke( event, parameter, limit ){
+		/*;
+			@meta-configuration:
+				{
+					"event:required": "string",
+					"parameter": "...",
+					"limit": "EventList"
+				}
+			@end-meta-configuration
+		*/
+
+		parameter = shft( arguments );
+
+		limit = asyum( pyp( parameter, EventList ), EventList, function hasEvent( ){
+			return false;
+		} );
+
+		posp( parameter, EventList );
+
+		console.log( "limit", limit );
+
+		if( limit.hasEvent( this ) ){
+			return this;
+		}
+
+		if( this.hasEvent( event ) ){
+			console.log( "invoking", event );
 
 			if( asea.server ){
 				let emitter = ferge( this, "EventEmitter" );
@@ -435,7 +511,7 @@ const edo = function edo( parameter ){
 
 	/*;
 		@method-documentation:
-			Bi-directional merging of event handlers.
+			Bi-directional forward flow merging of event handlers.
 		@end-method-documentation
 	*/
 	Event.prototype.merge = function merge( event ){
@@ -475,25 +551,90 @@ const edo = function edo( parameter ){
 			throw new Error( "cannot transfer from event" );
 		}
 
+		let self = this;
+
 		infray( event.list( ), this.list( ) )
 			.forEach( ( name ) => {
-				this.on( name, function emit( ){
-					event.emit.apply( event, [ name ].concat( raze( arguments ) ) );
-				} );
+				/*;
+					@note:
+						Identity events are not copied.
+					@end-note
+				*/
+				let thisIdentity = idntty( this ).toString( );
+				let eventIdentity = idntty( event ).toString( );
+				if( ( new RegExp( thisIdentity ) ).test( name ) ||
+			 		( new RegExp( eventIdentity ) ).test( name ) )
+				{
+					return;
+				}
+
+				console.log( "merging", thisIdentity, eventIdentity, name );
+
+				/*;
+					@note:
+						If event is already link, do not link it anymore.
+					@end-note
+				*/
+				if( this.hasLink( name, event ) ){
+					return;
+				}
+
+				console.log( "merging 2", thisIdentity, eventIdentity, name );
+
+				let invoke = function invoke( ){
+					let parameter = raze( arguments );
+
+					asyum( pyp( parameter, EventList ), EventList, function push( event ){
+						parameter.push( EventList( event ) );
+					} ).push( self );
+
+					event.invoke.apply( event, [ name ].concat( parameter ) );
+				};
+
+				this.on( name, invoke, { "disableOnListenerNotification": true } );
+
+				asyum( invoke, function linkedTo( ){ } ).linkedTo( event );
 			} );
 
-		let self = this;
 		let identity = idntty( this ).toString( );
 		this.on( `${ identity }:on-listener-added`, function onListenerAdded( name ){
-			event.on( name, function emit( ){
-				self.emit.apply( self, [ name ].concat( raze( arguments ) ) );
-			}, { "disableOnListenerNotification": true } );
+			if( self.hasLink( name, event ) ){
+				return;
+			}
+
+			let invoke = function invoke( ){
+				let parameter = raze( arguments );
+
+				asyum( pyp( parameter, EventList ), EventList, function push( event ){
+					parameter.push( EventList( event ) );
+				} ).push( self );
+
+				self.invoke.apply( self, [ name ].concat( parameter ) );
+			};
+
+			event.on( name, invoke, { "disableOnListenerNotification": true } );
+
+			asyum( invoke, function linkedTo( ){ } ).linkedTo( event );
 		} );
 
 		this.on( `${ identity }:once-listener-added`, function onceListenerAdded( name ){
-			event.once( name, function emit( ){
-				self.emit.apply( self, [ name ].concat( raze( arguments ) ) );
-			}, { "disableOnceListenerNotification": true } );
+			if( self.hasLink( name, event ) ){
+				return;
+			}
+
+			let invoke = function invoke( ){
+				let parameter = raze( arguments );
+
+				asyum( pyp( parameter, EventList ), EventList, function push( event ){
+					parameter.push( EventList( event ) );
+				} ).push( self );
+
+				self.invoke.apply( self, [ name ].concat( parameter ) );
+			};
+
+			event.once( name, invoke, { "disableOnceListenerNotification": true } );
+
+			asyum( invoke, function linkedTo( ){ } ).linkedTo( event );
 		} );
 
 		this.link( event );
@@ -675,7 +816,55 @@ const edo = function edo( parameter ){
 		return een( this.list( ), event );
 	};
 
-	
+	Event.prototype.haveEvent = function haveEvent( event ){
+		/*;
+			@meta-configuration:
+				{
+					"event:required": "[string]"
+				}
+			@end-meta-configuration
+		*/
+
+		event = pyck( plough( arguments ), STRING );
+
+		let list = this.list( );
+
+		return event.some( ( event ) => een( list, event ) );
+	};
+
+	Event.prototype.hasLink = function hasLink( event, link ){
+		/*;
+			@meta-configuration:
+				{
+					"event:required": "string",
+					"link:required": "Event"
+				}
+			@end-meta-configuration
+		*/
+
+		if( falzy( event ) || !protype( event, STRING ) ){
+			throw new Error( "invalid event" );
+		}
+
+		if( falzy( link ) || !clazof( link, "Event" ) ){
+			throw new Error( "invalid link" );
+		}
+
+		let holder = this.holder( event );
+		if( falzy( holder ) ){
+			return false;
+		}
+
+		if( !een( this[ LINK ], link, ( event, link ) => idntfy( event, link ) ) ){
+			return false;
+		}
+
+		link = idntty( link );
+
+		return een( holder.list( ), link, ( handler, link ) => ( handler.getLink( ) === link ) );
+	};
+
+
 
 	//: @server:
 	Event = heredito( Event, EventEmitter );
