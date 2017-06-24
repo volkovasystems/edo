@@ -58,7 +58,8 @@
 
 const clazof = require( "clazof" );
 const diatom = require( "diatom" );
-const een = require( "falzy" );
+const een = require( "een" );
+const falzy = require( "falzy" );
 const harden = require( "harden" );
 const idntfy = require( "idntfy" );
 

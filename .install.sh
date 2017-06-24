@@ -10,6 +10,7 @@ depher \
 diatom \
 doubt \
 een \
+embedd \
 eqe \
 execd \
 exorcise \
@@ -65,6 +66,7 @@ depher \
 diatom \
 doubt \
 een \
+embedd \
 eqe \
 execd \
 falzy \

@@ -57,6 +57,7 @@
 			"depher": "depher",
 			"diatom": "diatom",
 			"eqe": "eqe",
+			"embedd": "embedd",
 			"EventEmitter": "events",
 			"falzy": "falzy",
 			"harden": "harden",
@@ -69,7 +70,6 @@
 			"kurse": "kurse",
 			"leveld": "leveld",
 			"plough": "plough",
-			"posp": "posp",
 			"pyp": "pyp",
 			"protype": "protype",
 			"pyck": "pyck",
@@ -90,6 +90,7 @@ const clazof = require( "clazof" );
 const depher = require( "depher" );
 const diatom = require( "diatom" );
 const een = require( "een" );
+const embedd = require( "embedd" );
 const eqe = require( "eqe" );
 const falzy = require( "falzy" );
 const harden = require( "harden" );
@@ -102,7 +103,6 @@ const kein = require( "kein" );
 const kurse = require( "kurse" );
 const leveld = require( "leveld" );
 const plough = require( "plough" );
-const posp = require( "posp" );
 const pyp = require( "pyp" );
 const protype = require( "protype" );
 const pyck = require( "pyck" );
@@ -122,7 +122,6 @@ const listener = require( "./listener.js" );
 const EventList = require( "./event-list.support.js" );
 const listener = require( "./listener.support.js" );
 //: @end-client
-
 
 const EVENT = Symbol( "event" );
 const HANDLER = Symbol( "handler" );
@@ -188,7 +187,7 @@ const edo = function edo( parameter ){
 		handler = pyck( parameter, FUNCTION );
 
 		//: @note: Preserve the original handler. This will be used to emit notification.
-		let _handler = handler;
+		let handlerList = handler;
 
 		option = depher( parameter, OBJECT, { } );
 
@@ -209,7 +208,7 @@ const edo = function edo( parameter ){
 					this.holder( event ).push( handler );
 
 				}else{
-					this.on.apply( this, event.concat( handler ).concat( [ option ] ) );
+					this.on.apply( this, event.concat( handler ).concat( option ) );
 				}
 			} );
 
@@ -240,7 +239,7 @@ const edo = function edo( parameter ){
 			@end-note
 		*/
 		if( !embedd( this, event ) && !option.disableOnListenerNotification ){
-			this.emit( `${ identity }:on-listener-added`, event, _handler );
+			this.emit( `${ idntty( this ).toString( ) }:on-listener-added`, event, handlerList );
 		}
 
 		return this;
@@ -267,7 +266,7 @@ const edo = function edo( parameter ){
 		handler = pyck( parameter, FUNCTION );
 
 		//: @note: Preserve the original handler. This will be used to emit notification.
-		let _handler = handler;
+		let handlerList = handler;
 
 		option = depher( parameter, OBJECT, { } );
 
@@ -290,7 +289,7 @@ const edo = function edo( parameter ){
 					this.holder( event ).push( handler );
 
 				}else{
-					this.once.apply( this, event.concat( handler ).concat( [ option ] ) );
+					this.once.apply( this, event.concat( handler ).concat( option ) );
 				}
 			} );
 
@@ -321,7 +320,7 @@ const edo = function edo( parameter ){
 			@end-note
 		*/
 		if( !embedd( this, event ) && !option.disableOnceListenerNotification ){
-			this.emit( `${ identity }:once-listener-added`, event, _handler );
+			this.emit( `${ idntty( this ).toString( ) }:once-listener-added`, event, handlerList );
 		}
 
 		return this;
@@ -386,15 +385,17 @@ const edo = function edo( parameter ){
 
 		parameter = shft( arguments );
 
-		limit = asyum( pyp( parameter, EventList ), EventList, function hasEvent( ){
+		limit = asyum( pyp( parameter, EventList ), function hasEvent( ){
 			return false;
 		} );
-
-		posp( parameter, EventList );
 
 		if( limit.hasEvent( this ) ){
 			return this;
 		}
+
+		asyum( pyp( parameter, EventList ), function push( event ){
+			parameter.push( EventList( event ) );
+		} ).push( this );
 
 		if( this.hasEvent( event ) ){
 			if( asea.server ){
@@ -571,57 +572,69 @@ const edo = function edo( parameter ){
 				let invoke = function invoke( ){
 					let parameter = raze( arguments );
 
-					asyum( pyp( parameter, EventList ), EventList, function push( event ){
+					asyum( pyp( parameter, EventList ), function push( event ){
 						parameter.push( EventList( event ) );
 					} ).push( self );
 
 					event.invoke.apply( event, [ name ].concat( parameter ) );
 				};
 
-				this.on( name, invoke, { "disableOnListenerNotification": true } );
+				this.on( name, invoke );
 
 				asyum( invoke, function linkedTo( ){ } ).linkedTo( event );
 			} );
 
 		let identity = idntty( this ).toString( );
 		this.on( `${ identity }:on-listener-added`, function onListenerAdded( name ){
-			if( self.hasLink( name, event ) ){
+			/*;
+				@note:
+					Name of events are in array.
+				@end-note
+			*/
+
+			if( event.haveLink( name, self ) ){
 				return;
 			}
 
 			let invoke = function invoke( ){
 				let parameter = raze( arguments );
 
-				asyum( pyp( parameter, EventList ), EventList, function push( event ){
+				asyum( pyp( parameter, EventList ), function push( event ){
 					parameter.push( EventList( event ) );
-				} ).push( self );
+				} ).push( event );
 
-				self.invoke.apply( self, [ name ].concat( parameter ) );
+				name.forEach( ( name ) => self.invoke.apply( self, [ name ].concat( parameter ) ) );
 			};
 
-			event.on( name, invoke, { "disableOnListenerNotification": true } );
+			event.on( name, invoke );
 
-			asyum( invoke, function linkedTo( ){ } ).linkedTo( event );
+			asyum( invoke, function linkedTo( ){ } ).linkedTo( self );
 		} );
 
 		this.on( `${ identity }:once-listener-added`, function onceListenerAdded( name ){
-			if( self.hasLink( name, event ) ){
+			/*;
+				@note:
+					Name of events are in array.
+				@end-note
+			*/
+
+			if( event.haveLink( name, self ) ){
 				return;
 			}
 
 			let invoke = function invoke( ){
 				let parameter = raze( arguments );
 
-				asyum( pyp( parameter, EventList ), EventList, function push( event ){
+				asyum( pyp( parameter, EventList ), function push( event ){
 					parameter.push( EventList( event ) );
-				} ).push( self );
+				} ).push( event );
 
-				self.invoke.apply( self, [ name ].concat( parameter ) );
+				name.forEach( ( name ) => self.invoke.apply( self, [ name ].concat( parameter ) ) );
 			};
 
-			event.once( name, invoke, { "disableOnceListenerNotification": true } );
+			event.once( name, invoke );
 
-			asyum( invoke, function linkedTo( ){ } ).linkedTo( event );
+			asyum( invoke, function linkedTo( ){ } ).linkedTo( self );
 		} );
 
 		this.link( event );
@@ -849,6 +862,36 @@ const edo = function edo( parameter ){
 		link = idntty( link );
 
 		return een( holder.list( ), link, ( handler, link ) => ( handler.getLink( ) === link ) );
+	};
+
+	Event.prototype.haveLink = function haveLink( event, link ){
+		/*;
+			@meta-configuration:
+				{
+					"event:required": [
+						"[string]",
+						"..."
+					],
+					"link:required": "Event"
+				}
+			@end-meta-configuration
+		*/
+
+		let parameter = raze( arguments );
+
+		event = pyck( plough( parameter ), STRING );
+
+		if( arid( event ) ){
+			throw new Error( "invalid event" );
+		}
+
+		link = pyp( parameter, "Event" );
+
+		if( falzy( link ) || !clazof( link, "Event" ) ){
+			throw new Error( "invalid link" );
+		}
+
+		return event.some( ( event ) => this.hasLink( event, link ) );
 	};
 
 	//: @client:

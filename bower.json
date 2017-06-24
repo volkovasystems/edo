@@ -29,17 +29,21 @@
     "test",
     "tests"
   ],
+  "resolutions": {
+    "asyum": "^0.7.0"
+  },
   "dependencies": {
     "arid": "^0.26.0",
     "arkount": "^0.8.0",
     "asea": "^0.14.0",
-    "asyum": "^0.6.0",
+    "asyum": "^0.7.0",
     "called": "^0.30.0",
     "clazof": "^0.31.0",
     "depher": "^0.35.0",
     "diatom": "^0.31.0",
     "doubt": "^0.27.0",
     "een": "^0.19.0",
+    "embedd": "^0.0.0",
     "eqe": "^0.3.0",
     "execd": "^0.4.0",
     "falzy": "^0.20.0",
