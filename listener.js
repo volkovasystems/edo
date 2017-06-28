@@ -245,7 +245,9 @@ const listener = function listener( ){
 		.implement( "flush", function flush( ){
 			while( filled( this[ HANDLER ] ) ) this[ HANDLER ].pop( );
 
+			//: @server:
 			release( );
+			//: @end-server
 
 			return this;
 		} )
