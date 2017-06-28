@@ -8,6 +8,12 @@
 		<script type="application/javascript" src="https://code.jquery.com/qunit/qunit-2.3.2.js"></script>
 
 		<script type="application/javascript" src="./edo.deploy.js"></script>
+
+		<script type="application/javascript" src="./bower_components/arid/arid.deploy.js"></script>
+
+		<script type="application/javascript" src="./bower_components/een/een.deploy.js"></script>
+
+		<script type="application/javascript" src="./bower_components/filled/filled.deploy.js"></script>
 	</head>
 
 	<body>
@@ -131,6 +137,14 @@
 				event9.emit( "neh", "neh" );
 				event9.emit( "nih", "nih" );
 				event9.broadcast( [ "nah", "nah" ], "nah" );
+
+				assert.equal( filled( event9.list( ) ), true, "should be true" );
+
+				assert.equal( een( event9.list( ), "nah" ), true, "should be true" );
+
+				event9.flush( );
+
+				//assert.equal( arid( event9.list( ) ), true, "should be true" );
 
 			} );
 		</script>
