@@ -68,3 +68,50 @@ event3.merge( event4 );
 event4.merge( event5 );
 
 event3.emit( "woo", "woo" );
+
+
+let event6 = edo( )( );
+
+event6.on( "nah", function nah( value ){
+	assert.equal( value, "nah", "should be equal" );
+
+	console.log( "nah" );
+} );
+
+event6.on( "nah", function nah( value ){
+	assert.equal( value, "nah", "should be equal" );
+
+	console.log( "nah" );
+} );
+
+let event7 = edo( )( );
+
+event7.on( "neh", function neh( value ){
+	assert.equal( value, "neh", "should be equal" );
+
+	console.log( "ok event7" );
+} );
+
+let event8 = edo( )( );
+
+event8.on( "nih", function nih( value ){
+	assert.equal( value, "nih", "should be equal" );
+
+	console.log( "ok event8" );
+} );
+
+let event9 = edo( )( );
+
+event9.on( "nuh", function nuh( value ){
+	assert.equal( value, "nuh", "should be equal" );
+
+	console.log( "ok event9" );
+} );
+
+event7.merge( event6 );
+event8.merge( event7 );
+event9.merge( event8 );
+
+event9.emit( "neh", "neh" );
+event9.emit( "nih", "nih" );
+event9.broadcast( [ "nah", "nah" ], "nah" );
