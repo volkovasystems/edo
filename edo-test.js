@@ -1,6 +1,9 @@
 
+const arid = require( "arid" );
 const assert = require( "assert" );
 const edo = require( "./edo.js" );
+const een = require( "een" );
+const filled = require( "filled" );
 
 let event = edo( )( );
 
@@ -115,3 +118,11 @@ event9.merge( event8 );
 event9.emit( "neh", "neh" );
 event9.emit( "nih", "nih" );
 event9.broadcast( [ "nah", "nah" ], "nah" );
+
+assert.equal( filled( event9.list( ) ), true, "should be true" );
+
+assert.equal( een( event9.list( ), "nah" ), true, "should be true" );
+
+event9.flush( );
+
+assert.equal( arid( event9.list( ) ), true, "should be true" );
