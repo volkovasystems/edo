@@ -203,27 +203,35 @@ const edo = function edo( parameter ){
 		}
 
 		if( this.haveEvent( event ) ){
-			event.forEach( ( event ) => {
-				if( this.hasEvent( event ) ){
-					this.holder( event ).push( handler );
+			let index = event.length;
+			while( index-- ){
+				let name = event[ index ];
+				if( this.hasEvent( name ) ){
+					this.holder( name ).push( handler );
 
 				}else{
-					this.on.apply( this, event.concat( handler ).concat( option ) );
+					this.on.apply( this, [ name ].concat( handler ).concat( option ) );
 				}
-			} );
+			}
 
 		}else{
 			let holder = listener( ).register( this ).context( self );
 
 			handler = handler.reduce( ( listener, handler ) => listener.push( handler ), holder );
 
-			if( asea.server ){
+			if( asea.SERVER ){
 				let emitter = ferge( this, "EventEmitter" );
 
-				event.forEach( ( event ) => emitter.on( event, handler ) );
+				let index = event.length;
+				while( index-- ){
+					emitter.on( event[ index ], handler );
+				}
 
-			}else if( asea.client ){
-				event.forEach( ( event ) => this.handle( event, handler ) );
+			}else if( asea.CLIENT ){
+				let index = event.length;
+				while( index-- ){
+					this.handle( event[ index ], handler );
+				}
 
 			}else{
 				throw new Error( "cannot determine platform, platform not supported" );
@@ -284,27 +292,35 @@ const edo = function edo( parameter ){
 		handler = handler.map( ( handler ) => called.bind( self )( handler ) );
 
 		if( this.haveEvent( event ) ){
-			event.forEach( ( event ) => {
-				if( this.hasEvent( event ) ){
-					this.holder( event ).push( handler );
+			let index = event.length;
+			while( index-- ){
+				let name = event[ index ];
+				if( this.hasEvent( name ) ){
+					this.holder( name ).push( handler );
 
 				}else{
-					this.once.apply( this, event.concat( handler ).concat( option ) );
+					this.once.apply( this, [ name ].concat( handler ).concat( option ) );
 				}
-			} );
+			}
 
 		}else{
 			let holder = listener( ).register( this ).context( self );
 
 			handler = handler.reduce( ( listener, handler ) => listener.push( handler ), holder );
 
-			if( asea.server ){
+			if( asea.SERVER ){
 				let emitter = ferge( this, "EventEmitter" );
 
-				event.forEach( ( event ) => emitter.once( event, handler ) );
+				let index = event.length;
+				while( index-- ){
+					emitter.once( event[ index ], handler );
+				}
 
-			}else if( asea.client ){
-				event.forEach( ( event ) => this.handle( event, handler, true ) );
+			}else if( asea.CLIENT ){
+				let index = event.length;
+				while( index-- ){
+					this.handle( event[ index ], handler, true );
+				}
 
 			}else{
 				throw new Error( "cannot determine platform, platform not supported" );
@@ -347,12 +363,12 @@ const edo = function edo( parameter ){
 		if( this.hasEvent( event ) ){
 			this.restrict( DEFAULT_LIMIT );
 
-			if( asea.server ){
+			if( asea.SERVER ){
 				let emitter = ferge( this, "EventEmitter" );
 
 				emitter.emit.apply( this, [ event ].concat( parameter ) );
 
-			}else if( asea.client ){
+			}else if( asea.CLIENT ){
 				this.notify.apply( this, [ event ].concat( parameter ) );
 
 			}else{
@@ -360,11 +376,21 @@ const edo = function edo( parameter ){
 			}
 
 		}else{
-			let timeout = setTimeout( ( ) => {
+			//: @server:
+			let timeout = setImmediate( ( event, parameter ) => {
+				this.emit.apply( this, [ event ].concat( parameter ) );
+
+				clearImmediate( timeout );
+			}, event, parameter );
+			//: @end-server
+
+			//: @client:
+			let timeout = setTimeout( ( event, parameter ) => {
 				this.emit.apply( this, [ event ].concat( parameter ) );
 
 				clearTimeout( timeout );
-			}, this[ TIMEOUT ] );
+			}, this[ TIMEOUT ], event, parameter );
+			//: @end-client
 
 			this[ LIMIT ]--;
 		}
@@ -398,12 +424,12 @@ const edo = function edo( parameter ){
 		} ).push( this );
 
 		if( this.hasEvent( event ) ){
-			if( asea.server ){
+			if( asea.SERVER ){
 				let emitter = ferge( this, "EventEmitter" );
 
 				emitter.emit.apply( this, [ event ].concat( parameter ) );
 
-			}else if( asea.client ){
+			}else if( asea.CLIENT ){
 				this.notify.apply( this, [ event ].concat( parameter ) );
 
 			}else{
@@ -423,7 +449,7 @@ const edo = function edo( parameter ){
 			@end-meta-configuration
 		*/
 
-		if( falzy( timeout ) || !protype( timeout, NUMBER ) ){
+		if( falzy( timeout ) || typeof timeout != "number" ){
 			throw new Error( "invalid timeout" );
 		}
 
@@ -441,7 +467,7 @@ const edo = function edo( parameter ){
 			@end-meta-configuration
 		*/
 
-		if( falzy( limit ) || !protype( limit, NUMBER ) ){
+		if( falzy( limit ) || typeof limit != "number" ){
 			throw new Error( "invalid limit" );
 		}
 
@@ -454,26 +480,32 @@ const edo = function edo( parameter ){
 		/*;
 			@meta-configuration:
 				{
-					"event:required": "[string]",
+					"event:required": [
+						"string",
+						"[string]"
+					],
 					"parameter": "..."
 				}
 			@end-meta-configuration
 		*/
 
-		event = plough( [ event ] );
+		event = plough( event ).reverse( );
 
 		parameter = shft( arguments );
 
-		event.forEach( ( event ) => this.emit.apply( this, [ event ].concat( parameter ) ) );
+		let index = event.length;
+		while( index-- ){
+			this.emit.apply( this, [ event[ index ] ].concat( parameter ) );
+		}
 
 		return this;
 	};
 
 	Event.prototype.count = function count( event ){
-		if( asea.server ){
+		if( asea.SERVER ){
 			return this.listenerCount( event );
 
-		}else if( asea.client ){
+		}else if( asea.CLIENT ){
 			if( kein( event, this[ HANDLER ] ) ){
 				return this[ HANDLER ][ event ].count( );
 			}
@@ -486,19 +518,21 @@ const edo = function edo( parameter ){
 	};
 
 	Event.prototype.flush = function flush( ){
-		if( asea.server ){
-			this.list( ).forEach( ( event ) => asyum( this.holder( event ), function flush( ){ } ).flush( ) );
-
-			this.removeAllListeners( );
-
-		}else if( asea.client ){
-			valu( this[ HANDLER ] ).forEach( ( handler ) => handler.flush( ) );
-
-			Object.keys( this[ HANDLER ] ).forEach( ( event ) => ( delete this[ HANDLER ][ event ] ) );
-
-		}else{
-			throw new Error( "cannot determine platform, platform not supported" );
+		let list = valu( this[ HANDLER ] );
+		let index = list.length;
+		while( index-- ){
+			list[ index ].flush( );
 		}
+
+		list = Object.keys( this[ HANDLER ] );
+		index = list.length;
+		while( index-- ){
+			delete this[ HANDLER ][ list[ index ] ];
+		}
+
+		//: @server:
+		this.removeAllListeners( );
+		//: @end-server
 
 		while( this[ LINK ].length ) this[ LINK ].pop( ).flush( );
 
@@ -668,10 +702,10 @@ const edo = function edo( parameter ){
 		@end-method-documentation
 	*/
 	Event.prototype.list = function list( ){
-		if( asea.server ){
+		if( asea.SERVER ){
 			return this.eventNames( );
 
-		}else if( asea.client ){
+		}else if( asea.CLIENT ){
 			return Object.keys( this[ HANDLER ] );
 
 		}else{
@@ -693,11 +727,11 @@ const edo = function edo( parameter ){
 			@end-meta-configuration
 		*/
 
-		if( falzy( event ) || !protype( event, STRING ) ){
+		if( falzy( event ) || typeof event != "string" ){
 			return [ ];
 		}
 
-		if( asea.server ){
+		if( asea.SERVER ){
 			return this.listeners( event ).reduce( ( list, handler ) => {
 				if( clazof( handler, "Handler" ) ){
 					return list.concat( handler.list( ) );
@@ -709,7 +743,7 @@ const edo = function edo( parameter ){
 				}
 			}, [ ] );
 
-		}else if( asea.client ){
+		}else if( asea.CLIENT ){
 			if( !kein( event, this[ HANDLER ] ) ){
 				return [ ];
 			}
@@ -724,6 +758,8 @@ const edo = function edo( parameter ){
 	/*;
 		@method-documentation:
 			Return the Handler that holds the handler procedures.
+
+			There should only be one Handler for a specific event name.
 		@end-method-documentation
 	*/
 	Event.prototype.holder = function holder( event ){
@@ -741,7 +777,7 @@ const edo = function edo( parameter ){
 
 		event = pyck( plough( arguments ), STRING );
 
-		if( asea.server ){
+		if( asea.SERVER ){
 			return event.reduce( ( holder, event ) => {
 				return this.listeners( event ).reduce( ( holder, handler ) => {
 					if( clazof( handler, "Handler" ) ){
@@ -752,7 +788,7 @@ const edo = function edo( parameter ){
 				}, undefined );
 			}, undefined );
 
-		}else if( asea.client ){
+		}else if( asea.CLIENT ){
 			return event.reduce( ( holder, event ) => {
 				return this[ HANDLER ][ event ];
 			}, undefined );
@@ -809,7 +845,7 @@ const edo = function edo( parameter ){
 			@end-meta-configuration
 		*/
 
-		if( falzy( event ) || !protype( event, STRING ) ){
+		if( falzy( event ) || typeof event != "string" ){
 			throw new Error( "invalid event" );
 		}
 
@@ -842,7 +878,7 @@ const edo = function edo( parameter ){
 			@end-meta-configuration
 		*/
 
-		if( falzy( event ) || !protype( event, STRING ) ){
+		if( falzy( event ) || typeof event != "string" ){
 			throw new Error( "invalid event" );
 		}
 
@@ -895,88 +931,86 @@ const edo = function edo( parameter ){
 	};
 
 	//: @client:
-	if( asea.client ){
-		Event.prototype.notify = function notify( event, parameter ){
-			/*;
-				@meta-configuration:
-					{
-						"event:required": "string",
-						"parameter": "..."
-					}
-				@end-meta-configuration
-			*/
+	Event.prototype.notify = function notify( event, parameter ){
+		/*;
+			@meta-configuration:
+				{
+					"event:required": "string",
+					"parameter": "..."
+				}
+			@end-meta-configuration
+		*/
 
-			if( kein( event, this[ HANDLER ] ) ){
-				parameter = shft( arguments );
+		if( kein( event, this[ HANDLER ] ) ){
+			parameter = shft( arguments );
 
-				this[ HANDLER ][ event ].apply( self, parameter );
+			this[ HANDLER ][ event ].apply( self, parameter );
+		}
+
+		return this;
+	};
+
+	Event.prototype.handle = function handle( event, handler, once ){
+		/*;
+			@meta-configuration:
+				{
+					"event:required": "string",
+					"handler:required": "function",
+					"once": "boolean"
+				}
+			@end-meta-configuration
+		*/
+
+		if( falzy( event ) || typeof event != "string" ){
+			throw new Error( "invalid event" );
+		}
+
+		if( falzy( handler ) || typeof handler != "function" ){
+			throw new Error( "invalid handler" );
+		}
+
+		/*;
+			@note:
+				If the event is not yet registered, create a handler collection.
+			@end-note
+		*/
+		if( !kein( event, this[ HANDLER ] ) ){
+			if( !clazof( handler, "Handler" ) ){
+				if( once === true ){
+					handler = called.bind( self )( handler );
+				}
+
+				handler = listener( ).push( handler ).context( self ).register( this );
 			}
 
-			return this;
-		};
+			this[ HANDLER ][ event ] = handler;
 
-		Event.prototype.handle = function handle( event, handler, once ){
-			/*;
-				@meta-configuration:
-					{
-						"event:required": "string",
-						"handler:required": "function",
-						"once": "boolean"
-					}
-				@end-meta-configuration
-			*/
-
-			if( falzy( event ) || !protype( event, STRING ) ){
-				throw new Error( "invalid event" );
-			}
-
-			if( falzy( handler ) || !protype( handler, FUNCTION ) ){
-				throw new Error( "invalid handler" );
-			}
-
+		}else{
 			/*;
 				@note:
-					If the event is not yet registered, create a handler collection.
+					If the event is registered, make sure we are pushing the handler function
+						not the handler collection, if we encounter a handler collection,
+						merge it.
 				@end-note
 			*/
-			if( !kein( event, this[ HANDLER ] ) ){
-				if( !clazof( handler, "Handler" ) ){
-					if( once === true ){
-						handler = called.bind( self )( handler );
-					}
-
-					handler = listener( ).push( handler ).context( self ).register( this );
+			if( clazof( handler, "Handler" ) ){
+				if( once === true ){
+					handler.lock( );
 				}
 
-				this[ HANDLER ][ event ] = handler;
+				this[ HANDLER ][ event ].merge( handler );
 
 			}else{
-				/*;
-					@note:
-						If the event is registered, make sure we are pushing the handler function
-							not the handler collection, if we encounter a handler collection,
-							merge it.
-					@end-note
-				*/
-				if( clazof( handler, "Handler" ) ){
-					if( once === true ){
-						handler.lock( );
-					}
-
-					this[ HANDLER ][ event ].merge( handler );
-
-				}else{
-					if( once === true ){
-						handler = called.bind( self )( handler );
-					}
-
-					this[ HANDLER ][ event ].push( handler );
+				if( once === true ){
+					handler = called.bind( self )( handler );
 				}
-			}
 
-			return this;
-		};
-	}
+				this[ HANDLER ][ event ].push( handler );
+			}
+		}
+
+		return this;
+	};
 	//: @end-client
 
 	//: @server:

@@ -1,71 +1,32 @@
 {
-  "name": "edo",
-  "version": "0.12.0",
-  "main": "edo.deploy.js",
-  "support": "edo.support.js",
-  "homepage": "https://github.com/volkovasystems/edo",
-  "authors": [
-    "Richeve S. Bebedor <richeve.bebedor@gmail.com>",
-    "John Lenon Maghanoy <johnlenonmaghanoy@gmail.com>",
-    "Vinse Vinalon <vinsevinalon@gmail.com>"
-  ],
-  "description": "EventEmitter extension.",
-  "moduleType": [
-    "globals",
-    "node"
-  ],
-  "keywords": [
-    "edo",
-    "EventEmitter",
-    "events",
-    "emit",
-    "event"
-  ],
-  "license": "MIT",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
-  "dependencies": {
-    "arid": "^0.26.0",
-    "arkount": "^0.8.0",
-    "asea": "^0.14.0",
-    "asyum": "^0.7.0",
-    "called": "^0.31.0",
-    "clazof": "^0.31.0",
-    "depher": "^0.35.0",
-    "diatom": "^0.32.0",
-    "doubt": "^0.27.0",
-    "een": "^0.19.0",
-    "embedd": "^0.1.0",
-    "eqe": "^0.3.0",
-    "execd": "^0.4.0",
-    "falzy": "^0.20.0",
-    "filled": "^0.22.0",
-    "harden": "^0.22.0",
-    "heredito": "^0.37.0",
-    "idntfy": "^0.2.0",
-    "idntty": "^0.3.0",
-    "ferge": "^0.4.0",
-    "infray": "^0.1.0",
-    "kein": "^0.26.0",
-    "kurse": "^0.19.0",
-    "leveld": "^0.5.0",
-    "mrkd": "^0.8.0",
-    "ntrprt": "^0.1.0",
-    "plough": "^0.26.0",
-    "posp": "^0.7.0",
-    "protype": "^0.22.0",
-    "pyck": "^0.35.0",
-    "pyp": "^0.2.0",
-    "raze": "^0.30.0",
-    "shft": "^0.2.0",
-    "statis": "^0.16.0",
-    "symbiote": "^0.23.0",
-    "valu": "^0.2.0",
-    "zelf": "^0.12.0"
-  }
+	"name": "edo",
+	"version": "0.12.0",
+	"main": "edo.deploy.js",
+	"support": "edo.support.js",
+	"homepage": "https://github.com/volkovasystems/edo",
+	"authors": [
+		"Richeve S. Bebedor <richeve.bebedor@gmail.com>",
+		"John Lenon Maghanoy <johnlenonmaghanoy@gmail.com>",
+		"Vinse Vinalon <vinsevinalon@gmail.com>"
+	],
+	"description": "EventEmitter extension.",
+	"moduleType": [
+		"globals",
+		"node"
+	],
+	"keywords": [
+		"edo",
+		"EventEmitter",
+		"events",
+		"emit",
+		"event"
+	],
+	"license": "MIT",
+	"ignore": [
+		"**/.*",
+		"node_modules",
+		"bower_components",
+		"test",
+		"tests"
+	]
 }

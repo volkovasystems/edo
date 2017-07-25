@@ -54,7 +54,6 @@
 			"called": "called",
 			"clazof": "clazof",
 			"diatom": "diatom",
-			"doubt": "doubt",
 			"execd": "execd",
 			"exorcise": "exorcise",
 			"falzy": "falzy",
@@ -63,9 +62,7 @@
 			"idntty": "idntty",
 			"kurse": "kurse",
 			"mrkd": "mrkd",
-			"ntrprt": "ntrprt",
 			"posp": "posp",
-			"protype": "protype",
 			"raze": "raze",
 			"statis": "statis",
 			"zelf": "zelf"
@@ -77,7 +74,6 @@ const arkount = require( "arkount" );
 const called = require( "called" );
 const clazof = require( "clazof" );
 const diatom = require( "diatom" );
-const doubt = require( "doubt" );
 const execd = require( "execd" );
 const falzy = require( "falzy" );
 const filled = require( "filled" );
@@ -85,9 +81,7 @@ const harden = require( "harden" );
 const idntty = require( "idntty" );
 const kurse = require( "kurse" );
 const mrkd = require( "mrkd" );
-const ntrprt = require( "ntrprt" );
 const posp = require( "posp" );
-const protype = require( "protype" );
 const raze = require( "raze" );
 const statis = require( "statis" );
 const zelf = require( "zelf" );
@@ -99,6 +93,7 @@ const exorcise = require( "exorcise" );
 const CONTEXT = Symbol( "context" );
 const EVENT = Symbol( "event" );
 const ID = Symbol( "id" );
+const LABEL = Symbol( "label" );
 const LINK = Symbol( "link" );
 const HANDLER = Symbol( "handler" );
 const OWNER = Symbol( "owner" );
@@ -111,7 +106,16 @@ const listener = function listener( ){
 	//: @end-server
 
 	statis( Handler )
+
 		.attach( HANDLER, [ ] )
+
+		.attach( LABEL, [ ] )
+
+		/*;
+			@static-method-documentation:
+				Push multiple handler.
+			@end-static-method-documentation
+		*/
 		.implement( "push", function push( handler ){
 			/*;
 				@meta-configuration:
@@ -124,19 +128,50 @@ const listener = function listener( ){
 				@end-meta-configuration
 			*/
 
-			if( doubt( handler, AS_ARRAY ) ){
-				raze( handler ).forEach( ( handler ) => this.push( handler ) );
-
-				return this;
+			let list = raze( handler ).reverse( );
+			let index = list.length;
+			while( length-- ){
+				this.insert( list[ index ] );
 			}
 
-			if( !protype( handler, FUNCTION ) ){
+			return this;
+		} )
+
+		/*;
+			@static-method-documentation:
+				Insert single handler
+			@end-static-method-documentation
+		*/
+		.implement( "insert", function insert( handler ){
+			/*;
+				@meta-configuration:
+					{
+						"handler:required": [
+							"function",
+							"[function]"
+						]
+					}
+				@end-meta-configuration
+			*/
+
+			if( typeof handler != "function" ){
 				throw new Error( "invalid handler function" );
 			}
 
+			/*;
+				@note:
+					We are adding trace ID to the handler before pushing,
+						so that we can mark the handler properly
+				@end-note
+			*/
 			this[ HANDLER ].push( kurse( handler ) );
 
 			statis( handler )
+				/*;
+					@static-method-documentation:
+
+					@end-static-method-documentation
+				*/
 				.implement( "ownedBy", function ownedBy( owner ){
 					/*;
 						@meta-configuration:
@@ -158,6 +193,12 @@ const listener = function listener( ){
 
 					return this;
 				} )
+
+				/*;
+					@static-method-documentation:
+
+					@end-static-method-documentation
+				*/
 				.implement( "linkedTo", function linkedTo( link ){
 					/*;
 						@meta-configuration:
@@ -179,9 +220,21 @@ const listener = function listener( ){
 
 					return this;
 				} )
+
+				/*;
+					@static-method-documentation:
+						Return the owner Event ID.
+					@end-static-method-documentation
+				*/
 				.implement( "getOwner", function getOwner( ){
 					return this[ OWNER ];
 				} )
+
+				/*;
+					@static-method-documentation:
+						Return the linking Event ID.
+					@end-static-method-documentation
+				*/
 				.implement( "getLink", function getLink( ){
 					return this[ LINK ];
 				} );
@@ -190,6 +243,12 @@ const listener = function listener( ){
 
 			return this;
 		} )
+
+		/*;
+			@static-method-documentation:
+
+			@end-static-method-documentation
+		*/
 		.implement( "merge", function merge( handler ){
 			/*;
 				@meta-configuration:
@@ -199,16 +258,29 @@ const listener = function listener( ){
 				@end-meta-configuration
 			*/
 
-			if( !protype( handler, FUNCTION ) ){
+			if( typeof handler != "function" ){
 				throw new Error( "invalid handler function" );
 			}
 
 			if( clazof( handler, "Handler" ) ){
-				handler.list( ).forEach( ( handler ) => this.push( handler ) );
+				let list = handler.list( ).reverse( );
+				let length = list.length;
+				while( length-- ){
+					this.insert( list[ length ] );
+				}
+
+			}else{
+				throw new Error( `cannot merge handler, ${ handler }` );
 			}
 
 			return this;
 		} )
+
+		/*;
+			@static-method-documentation:
+
+			@end-static-method-documentation
+		*/
 		.implement( "context", function context( self ){
 			/*;
 				@meta-configuration:
@@ -222,6 +294,12 @@ const listener = function listener( ){
 
 			return this;
 		} )
+
+		/*;
+			@static-method-documentation:
+				Register Event instance to the Handler.
+			@end-static-method-documentation
+		*/
 		.implement( "register", function register( event ){
 			/*;
 				@meta-configuration:
@@ -239,9 +317,21 @@ const listener = function listener( ){
 
 			return this;
 		} )
+
+		/*;
+			@static-method-documentation:
+
+			@end-static-method-documentation
+		*/
 		.implement( "count", function count( ){
 			return arkount( this[ HANDLER ] );
 		} )
+
+		/*;
+			@static-method-documentation:
+				Flush all handler function from this Handler.
+			@end-static-method-documentation
+		*/
 		.implement( "flush", function flush( ){
 			while( filled( this[ HANDLER ] ) ) this[ HANDLER ].pop( );
 
@@ -251,15 +341,53 @@ const listener = function listener( ){
 
 			return this;
 		} )
+
+		/*;
+			@static-method-documentation:
+
+			@end-static-method-documentation
+		*/
 		.implement( "list", function list( ){
 			return raze( this[ HANDLER ] );
 		} )
+
+		/*;
+			@static-method-documentation:
+				Lock the handlers to a one time calling wrapper.
+			@end-static-method-documentation
+		*/
 		.implement( "lock", function lock( ){
-			this[ HANDLER ].forEach( ( handler, index ) => {
+
+			let index = this[ HANDLER ].length;
+
+			while( index-- ){
+				let handler = this[ HANDLER ][ index ];
+
 				this[ HANDLER ][ index ] = called.bind( this[ CONTEXT ] )( handler );
-			} );
+			}
 
 			return this;
+		} )
+
+		.implement( "label", function label( name ){
+			/*;
+				@meta-configuration:
+					{
+						"name:required": [
+							"string",
+							"[string]"
+						]
+					}
+				@end-meta-configuration
+			*/
+
+			
+
+			return this;
+		} )
+
+		.implement( "getEvent", function getEvent( ){
+			return this[ EVENT ];
 		} );
 
 	Handler.prototype.initialize = function initialize( parameter ){
@@ -282,6 +410,11 @@ const listener = function listener( ){
 		return this;
 	};
 
+	/*;
+		@method-documentation:
+			Execute all handler functions.
+		@end-method-documentation
+	*/
 	Handler.prototype.execute = function execute( parameter ){
 		/*;
 			@meta-configuration:
@@ -293,18 +426,32 @@ const listener = function listener( ){
 
 		parameter = raze( arguments );
 
-		this.handler.reverse( ).forEach( ( handler ) => {
+		let index = this.handler.length;
+		while( index-- ){
+			let handler = this.handler[ index ];
+
 			try{
 				handler.apply( this.context, parameter );
 
-			}catch( error ){
-				this.event.emit( "error", error );
-			}
+				//: @server:
+				if( execd( handler ) ){
+					setImmediate( ( handler ) => posp( this.handler, handler ), handler );
+				}
+				//: @end-server
 
-			if( execd( handler ) ){
-				posp( this.handler, handler );
+				//: @client:
+				if( execd( handler ) ){
+					posp( this.handler, handler );
+				}
+				//: @end-client
+
+			}catch( error ){
+				this.event.emit( "error", new Error( `cannot execute handler properly, ${ error.stack }` ) );
+
+			}finally{
+				handler = undefined;
 			}
-		} );
+		}
 
 		return this;
 	};

@@ -74,6 +74,9 @@ let EventList = diatom( "EventList" );
 EventList.prototype.initialize = function initialize( event ){
 	/*;
 		@meta-configuration:
+			{
+				"event": "Event"
+			}
 		@end-meta-configuration
 	*/
 
