@@ -367,27 +367,6 @@ const listener = function listener( ){
 			}
 
 			return this;
-		} )
-
-		.implement( "label", function label( name ){
-			/*;
-				@meta-configuration:
-					{
-						"name:required": [
-							"string",
-							"[string]"
-						]
-					}
-				@end-meta-configuration
-			*/
-
-			
-
-			return this;
-		} )
-
-		.implement( "getEvent", function getEvent( ){
-			return this[ EVENT ];
 		} );
 
 	Handler.prototype.initialize = function initialize( parameter ){

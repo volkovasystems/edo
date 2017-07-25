@@ -603,19 +603,19 @@ const edo = function edo( parameter ){
 					return;
 				}
 
-				let invoke = function invoke( ){
+				let invoker = function invoker( ){
 					let parameter = raze( arguments );
 
 					asyum( pyp( parameter, EventList ), function push( event ){
 						parameter.push( EventList( event ) );
 					} ).push( self );
 
-					event.invoke.apply( event, [ name ].concat( parameter ) );
+					event.invoker.apply( event, [ name ].concat( parameter ) );
 				};
 
-				this.on( name, invoke );
+				this.on( name, invoker );
 
-				asyum( invoke, function linkedTo( ){ } ).linkedTo( event );
+				asyum( invoker, function linkedTo( ){ } ).linkedTo( event );
 			} );
 
 		let identity = idntty( this ).toString( );
@@ -630,7 +630,7 @@ const edo = function edo( parameter ){
 				return;
 			}
 
-			let invoke = function invoke( ){
+			let invoker = function invoker( ){
 				let parameter = raze( arguments );
 
 				asyum( pyp( parameter, EventList ), function push( event ){
@@ -640,9 +640,9 @@ const edo = function edo( parameter ){
 				name.forEach( ( name ) => self.invoke.apply( self, [ name ].concat( parameter ) ) );
 			};
 
-			event.on( name, invoke );
+			event.on( name, invoker );
 
-			asyum( invoke, function linkedTo( ){ } ).linkedTo( self );
+			asyum( invoker, function linkedTo( ){ } ).linkedTo( self );
 		} );
 
 		this.on( `${ identity }:once-listener-added`, function onceListenerAdded( name ){
@@ -656,19 +656,19 @@ const edo = function edo( parameter ){
 				return;
 			}
 
-			let invoke = function invoke( ){
+			let invoker = function invoker( ){
 				let parameter = raze( arguments );
 
 				asyum( pyp( parameter, EventList ), function push( event ){
 					parameter.push( EventList( event ) );
 				} ).push( event );
 
-				name.forEach( ( name ) => self.invoke.apply( self, [ name ].concat( parameter ) ) );
+				name.forEach( ( name ) => self.invoker.apply( self, [ name ].concat( parameter ) ) );
 			};
 
-			event.once( name, invoke );
+			event.once( name, invoker );
 
-			asyum( invoke, function linkedTo( ){ } ).linkedTo( self );
+			asyum( invoker, function linkedTo( ){ } ).linkedTo( self );
 		} );
 
 		this.link( event );
